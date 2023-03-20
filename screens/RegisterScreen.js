@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
@@ -45,7 +45,7 @@ const RegisterScreen = () => {
                     <Text style={styles.buttonOutline}>Register</Text>
                 </TouchableOpacity>
                 <Text style={styles.registerText1}>Already have an account?</Text>
-                <Text style={styles.registerText2} onPress={() => navigation.navigate('Login')}>Login here</Text>
+                <Text style={styles.registerText2} onPress={() => navigation.replace('Login')}>Login here</Text>
             </View>
         </KeyboardAvoidingView>
     )
