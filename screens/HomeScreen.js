@@ -11,7 +11,7 @@ const HomeScreen = () => {
     auth.signOut()
     .then(() => {
         console.log('Signed out');
-        navigation.navigate('Login');
+        
     })
     .catch(error => alert(error.message));
 }
@@ -22,7 +22,11 @@ const HomeScreen = () => {
       <TouchableOpacity style={styles.logoutButton} onPress={handleSingOut}>
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
+
     </View>
+
+
+    
   )
 }
 
