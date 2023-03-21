@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/core'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { auth } from '../firebase'
-import MainNavigation from '../navigation/MainNavigation'
 
 const HomeScreen = () => {
 
@@ -12,7 +11,7 @@ const HomeScreen = () => {
     auth.signOut()
     .then(() => {
         console.log('Signed out');
-        //navigation.navigate('Login');
+        
     })
     .catch(error => alert(error.message));
 }
