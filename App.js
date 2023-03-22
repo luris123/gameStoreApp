@@ -1,4 +1,4 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { auth } from "./firebase";
@@ -10,12 +10,34 @@ import RegisterScreen from "./screens/RegisterScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import SearchScreen from "./screens/SearchScreen";
+import ThemeContext from "./components/ThemeContext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [user, setUser] = useState(false);
+  const [theme, setTheme] = useState('light');
+
+  const lightTheme = {
+    colors: {
+      primary: '#6200EE',
+      background: '#FFFFFF',
+      card: '#F5F5F5',
+      text: '#333333',
+      border: '#DDDDDD',
+    },
+  };
+  
+  const darkTheme = {
+    colors: {
+      primary: '#BB86FC',
+      background: '#121212',
+      card: '#1E1E1E',
+      text: '#FFFFFF',
+      border: '#333333',
+    },
+  };
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -29,7 +51,8 @@ export default function App() {
 
   if (user === false) {
     return (
-      <NavigationContainer>
+      <ThemeContext.Provider value={{ theme, setTheme }}>
+      <NavigationContainer theme={theme === 'light' ? lightTheme : darkTheme}>
         <Stack.Navigator>
           <Stack.Screen
             options={{ headerShown: false }}
@@ -44,11 +67,13 @@ export default function App() {
           <Stack.Screen name="Home" component={HomeScreen} />
         </Stack.Navigator>
       </NavigationContainer>
+      </ThemeContext.Provider>
     );
   }
 
   return (
-    <NavigationContainer>
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <NavigationContainer theme={theme === 'light' ? lightTheme : darkTheme}>
       <Tab.Navigator
         initialRouteName={"Home"}
         screenOptions={({ route }) => ({
@@ -79,5 +104,6 @@ export default function App() {
         <Tab.Screen name={"Profile"} component={ProfileScreen} />
       </Tab.Navigator>
     </NavigationContainer>
+    </ThemeContext.Provider>
   );
 }

@@ -18,10 +18,9 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.homeContainer}>
-      <Text style={styles.emailText}>Email: {auth.currentUser.email}</Text>
-      <TouchableOpacity style={styles.logoutButton} onPress={handleSingOut}>
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableOpacity>
+      <Text style={styles.emailText}>
+        Home Screen
+      </Text>
 
     </View>
 
