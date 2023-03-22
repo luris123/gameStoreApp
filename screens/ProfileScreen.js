@@ -1,11 +1,4 @@
-import { useNavigation } from "@react-navigation/core";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Switch,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Switch } from "react-native";
 import React, { useContext } from "react";
 import { auth } from "../firebase";
 import ThemeContext from "../components/ThemeContext";
@@ -14,7 +7,7 @@ const ProfileScreen = ({ navigation }) => {
   const { theme, setTheme } = useContext(ThemeContext);
 
   const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   const handleSignOut = () => {
@@ -25,8 +18,6 @@ const ProfileScreen = ({ navigation }) => {
       })
       .catch((error) => alert(error.message));
   };
-
-
 
   return (
     <View style={styles.profileContainer}>
@@ -46,15 +37,6 @@ const ProfileScreen = ({ navigation }) => {
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
-  darkTheme: {
-    backgroundColor: "#000",
-    color: "#fff",
-  },
-  lightTheme: {
-    backgroundColor: "#fff",
-    color: "#000",
-  },
-
   profileContainer: {
     flex: 1,
     justifyContent: "center",
