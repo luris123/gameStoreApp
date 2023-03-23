@@ -26,3 +26,38 @@ exports.getAllGenres = functions.https.onRequest((request, response) => {
     }
   });
 });
+
+exports.getAllGames = functions.https.onRequest((request, response) => {
+  cors(request, response, async () => {
+    try {
+      const res = await axios.get(
+        `https://api.rawg.io/api/games?key=${API_KEY}`
+      );
+      response.send({
+        "status": "success",
+        "data": res.data.results
+      });
+    } catch (error) {
+      response.send({
+        "status": error,
+        "data": error
+      });
+    }
+  });
+});
+
+exports.getDetailsAboutTheGame = functions.https.onCall(async (data, context) => {
+    try {
+      const res = await axios.get(
+        `https://api.rawg.io/api/games/${data.id}?key=${API_KEY}`
+      );
+      return {
+        data: res.data
+      };
+    } 
+    catch (error) {
+      return {
+        error: error
+      };
+    }
+});
