@@ -13,7 +13,7 @@ const HomeScreen = () => {
   useEffect(() => {
     getAllGenres()
       .then(result => {
-        console.log(result.data);
+        //console.log(result.data);
       })
       .catch(error => {
         console.log(error);
@@ -34,6 +34,10 @@ const HomeScreen = () => {
       <Text style={styles.emailText}>Email: {auth.currentUser.email}</Text>
       <TouchableOpacity style={styles.logoutButton} onPress={handleSingOut}>
         <Text style={styles.buttonText}>Logout</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.logoutButton} 
+        onPress={() => navigation.navigate("GameScreen")}>
+        <Text style={styles.buttonText}>GameScreen</Text>
       </TouchableOpacity>
     </View>
   )

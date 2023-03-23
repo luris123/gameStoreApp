@@ -10,6 +10,7 @@ import RegisterScreen from "./screens/RegisterScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import SearchScreen from "./screens/SearchScreen";
+import GameScreen from "./screens/GameScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -42,6 +43,7 @@ export default function App() {
             component={RegisterScreen}
           />
           <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="GameScreen" component={GameScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     );
@@ -77,6 +79,7 @@ export default function App() {
         <Tab.Screen name={"Home"} component={HomeScreen} />
         <Tab.Screen name={"Search"} component={SearchScreen} />
         <Tab.Screen name={"Profile"} component={ProfileScreen} />
+        <Tab.Screen name={"GameScreen"} component={GameScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
