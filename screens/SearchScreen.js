@@ -2,11 +2,15 @@ import React from "react";
 import { TextInput, StyleSheet, Image, Text, View } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+
+import ThemeContext from "../components/ThemeContext";
 
 
 const SearchScreen = (props) => {
+
+    const { theme } = useContext(ThemeContext);
 
     const [value, setValue] = useState()
 
@@ -53,6 +57,7 @@ const SearchScreen = (props) => {
                             backgroundColor: "#dfe6e0",
                             fontWeight: '600',
                             marginBottom: 2,
+                            color: theme === "light" ? "black" : "lightgrey",
                         }}>product name</Text>
 
                 </TouchableOpacity>
@@ -103,6 +108,18 @@ const styles = StyleSheet.create({
         paddingTop: 40,
     },
 
+    textLight: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginBottom: 20,
+        color: "black",
+      },
+      textDark: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginBottom: 20,
+        color: "lightgrey",
+      },
 
     headerContainer: {
         //backgroundColor: "#a30b0b",

@@ -10,17 +10,12 @@ import RegisterScreen from "./screens/RegisterScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import SearchScreen from "./screens/SearchScreen";
-import ShoppingCart from './screens/ShoppingCart';
+import ShoppingCartScreen from './screens/ShoppingCartScreen';
 import ThemeContext from "./components/ThemeContext";
 
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
-const homeName = "Home";
-const searchName = "Search";
-const profileName = "Profile";
-const shoppingCart = "Shopping";
 
 
 export default function App() {
@@ -59,15 +54,7 @@ export default function App() {
 
  }, []);
 
-  if (user === false){
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUser(true);
-      } else {
-        setUser(false);
-      }
-    });
-  }, []);
+
 
   if (user === false) {
     return (
@@ -120,9 +107,9 @@ export default function App() {
           }}
         >
           <Tab.Screen name={"Home"} component={HomeScreen} />
-          <Tab.Screen name={"Search"} component={SearchScreen} />
+          <Tab.Screen name={"Search"} component={SearchScreen} options={{headerShown: false}} />
           <Tab.Screen name={"Profile"} component={ProfileScreen} />
-          <Tab.screen name={"Shopping"} component={ShoppingCart} options={{headerShown: false}}/>
+          <Tab.Screen name={"Shopping"} component={ShoppingCartScreen} options={{headerShown: false}}/>
         </Tab.Navigator>
       </NavigationContainer>
     </ThemeContext.Provider>

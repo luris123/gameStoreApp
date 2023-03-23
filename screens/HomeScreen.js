@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/core'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import ThemeContext from "../components/ThemeContext";
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { auth, functions } from '../firebase'
 import { httpsCallable } from 'firebase/functions';
 
@@ -14,13 +14,7 @@ const HomeScreen = () => {
 
   const { theme } = useContext(ThemeContext);
 
-  return (
-    <View style={styles.homeContainer}>
-      <Text style={theme === "light" ? styles.textLight : styles.textDark}>
-        Home Screen
-      </Text>
-
-  useEffect(() => {
+ useEffect(() => {
     getAllGenres()
       .then(result => {
         console.log(result.data);
@@ -30,14 +24,6 @@ const HomeScreen = () => {
       })
   }, [])
 
-  const handleSignOut = () => {
-    auth.signOut()
-      .then(() => {
-        console.log('Signed out');
-
-      })
-      .catch(error => alert(error.message));
-  }
 
   return (
     <View style={styles.homeContainer}>
@@ -49,8 +35,6 @@ const HomeScreen = () => {
 };
 
 
-  )
-}
 
 export default HomeScreen
 
