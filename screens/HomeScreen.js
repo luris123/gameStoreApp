@@ -1,7 +1,13 @@
-import { useNavigation } from "@react-navigation/core";
-import { StyleSheet, Text, View } from "react-native";
-import React, { useContext } from "react";
+
+import { useNavigation } from '@react-navigation/core'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import ThemeContext from "../components/ThemeContext";
+
+import React, { useEffect } from 'react'
+import { auth, functions } from '../firebase'
+import { httpsCallable } from 'firebase/functions';
+
+const getAllGenres = httpsCallable(functions, 'getAllGenres');
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -13,11 +19,40 @@ const HomeScreen = () => {
       <Text style={theme === "light" ? styles.textLight : styles.textDark}>
         Home Screen
       </Text>
+
+  useEffect(() => {
+    getAllGenres()
+      .then(result => {
+        console.log(result.data);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }, [])
+
+  const handleSignOut = () => {
+    auth.signOut()
+      .then(() => {
+        console.log('Signed out');
+
+      })
+      .catch(error => alert(error.message));
+  }
+
+  return (
+    <View style={styles.homeContainer}>
+      <Text style={theme === "light" ? styles.textLight : styles.textDark}>
+        Home Screen
+      </Text>
     </View>
   );
 };
 
-export default HomeScreen;
+
+  )
+}
+
+export default HomeScreen
 
 const styles = StyleSheet.create({
   homeContainer: {
@@ -50,5 +85,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

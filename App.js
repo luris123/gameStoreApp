@@ -10,10 +10,18 @@ import RegisterScreen from "./screens/RegisterScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import SearchScreen from "./screens/SearchScreen";
+import ShoppingCart from './screens/ShoppingCart';
 import ThemeContext from "./components/ThemeContext";
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const homeName = "Home";
+const searchName = "Search";
+const profileName = "Profile";
+const shoppingCart = "Shopping";
+
 
 export default function App() {
   const [user, setUser] = useState(false);
@@ -40,6 +48,18 @@ export default function App() {
   };
 
   useEffect(() => {
+    auth.onAuthStateChanged(user => {
+         if(user){
+             setUser(true)
+
+         } else {
+          setUser(false)
+         }
+     });
+
+ }, []);
+
+  if (user === false){
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUser(true);
@@ -84,6 +104,8 @@ export default function App() {
                 iconName = focused ? "person" : "person-outline";
               } else if (route.name === "Search") {
                 iconName = focused ? "search" : "search-outline";
+              } else if (route.name === "Shopping") {
+                iconName = focused ? "card-outline" : "card-outline"
               }
 
               // You can return any component that you like here!
@@ -100,8 +122,10 @@ export default function App() {
           <Tab.Screen name={"Home"} component={HomeScreen} />
           <Tab.Screen name={"Search"} component={SearchScreen} />
           <Tab.Screen name={"Profile"} component={ProfileScreen} />
+          <Tab.screen name={"Shopping"} component={ShoppingCart} options={{headerShown: false}}/>
         </Tab.Navigator>
       </NavigationContainer>
     </ThemeContext.Provider>
+
   );
 }
