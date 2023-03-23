@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/core'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+
 import React, { useEffect } from 'react'
 import { auth, functions } from '../firebase'
 import { httpsCallable } from 'firebase/functions';
@@ -36,6 +37,7 @@ const HomeScreen = () => {
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
     </View>
+
   )
 }
 
