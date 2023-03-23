@@ -1,15 +1,18 @@
 const functions = require("firebase-functions");
 const axios = require("axios");
 const cors = require("cors")({ origin: true });
+require('dotenv').config();
 
 // // Create and deploy your first functions
 // // https://firebase.google.com/docs/functions/get-starte
+
+const API_KEY = process.env.API_KEY;
 
 exports.getAllGenres = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
     try {
       const res = await axios.get(
-        `https://api.rawg.io/api/genres?key=ff1c5d0eb69e428696fd5b80b5cf49df`
+        `https://api.rawg.io/api/genres?key=${API_KEY}`
       );
       response.send({
         "status": "success",
