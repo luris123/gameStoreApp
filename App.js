@@ -51,8 +51,7 @@ export default function App() {
 
   if (user === false) {
     return (
-      <ThemeContext.Provider value={{ theme, setTheme }}>
-        <NavigationContainer theme={theme === "light" ? lightTheme : darkTheme}>
+        <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
               options={{ headerShown: false }}
@@ -67,7 +66,6 @@ export default function App() {
             <Stack.Screen name="Home" component={HomeScreen} />
           </Stack.Navigator>
         </NavigationContainer>
-      </ThemeContext.Provider>
     );
   }
 

@@ -1,7 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View, Switch } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useContext } from "react";
 import { auth } from "../firebase";
 import ThemeContext from "../components/ThemeContext";
+import SwitchWithText from "../components/SwitchWithText";
 
 const ProfileScreen = ({ navigation }) => {
   const { theme, setTheme } = useContext(ThemeContext);
@@ -21,10 +22,16 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.profileContainer}>
-      <Text style={styles.emailText}>Profile</Text>
-      <Text style={styles.emailText}>Email: {auth.currentUser.email}</Text>
-      <Switch
-        value={theme === "light" ? false : true}
+      <Text
+        style={
+          theme === "light" ? styles.profileTextLight : styles.profileTextDark
+        }
+      >
+        Email: {auth.currentUser.email}
+      </Text>
+      <SwitchWithText
+        text="Dark Mode"
+        value={theme === "dark"}
         onValueChange={toggleTheme}
       />
       <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
@@ -43,10 +50,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     color: "white",
   },
-  emailText: {
+  profileTextLight: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
+    color: "black",
+  },
+  profileTextDark: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "lightgrey",
   },
   logoutButton: {
     backgroundColor: "#2c6bed",

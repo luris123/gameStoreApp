@@ -1,13 +1,18 @@
 import { useNavigation } from "@react-navigation/core";
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
+import ThemeContext from "../components/ThemeContext";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
 
+  const { theme } = useContext(ThemeContext);
+
   return (
     <View style={styles.homeContainer}>
-      <Text style={styles.emailText}>Home Screen</Text>
+      <Text style={theme === "light" ? styles.textLight : styles.textDark}>
+        Home Screen
+      </Text>
     </View>
   );
 };
@@ -20,10 +25,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  emailText: {
+  textLight: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
+    color: "black",
+  },
+  textDark: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "lightgrey",
   },
   logoutButton: {
     backgroundColor: "#2c6bed",
