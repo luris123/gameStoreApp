@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -15,6 +14,7 @@ import { auth } from './firebase';
 import React, { useEffect, useState } from 'react'
 import ProfileScreen from './screens/ProfileScreen';
 import SearchScreen from './screens/SearchScreen';
+import ShoppingCart from './screens/ShoppingCart';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,6 +22,7 @@ const Tab = createBottomTabNavigator();
 const homeName = "Home";
 const searchName = "Search";
 const profileName = "Profile";
+const shoppingCart = "Shopping";
 
 
 export default function App() {
@@ -33,6 +34,8 @@ export default function App() {
          if(user){
              setUser(true)
 
+         } else {
+          setUser(false)
          }
      });
 
@@ -58,20 +61,23 @@ export default function App() {
     <NavigationContainer>
 
       <Tab.Navigator
-        initialRouteName={homeName}
+        initialRouteName={"Home"}
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
             let rn = route.name;
 
-            if (rn === homeName) {
+            if (rn === "Home") {
               iconName = focused ? 'home' : 'home-outline';
 
-            } else if (rn === profileName) {
+            } else if (rn === "Profile") {
               iconName = focused ? 'person' : 'person-outline';
 
-            } else if (rn === searchName) {
+            } else if (rn === "Search") {
               iconName = focused ? 'search' : 'search-outline';
+
+            } else if (rn === "Shopping") {
+              iconName = focused ? 'card-outline' : 'card-outline';
             }
 
             // You can return any component that you like here!
@@ -85,18 +91,15 @@ export default function App() {
           style: { padding: 10, height: 70}
         }}>
 
-        <Tab.Screen name={homeName} component={HomeScreen} />
-        <Tab.Screen name={searchName} component={SearchScreen} />
-        <Tab.Screen name={profileName} component={ProfileScreen} />
+        <Tab.Screen name={"Home"} component={HomeScreen} options={{headerTitleAlign: "center", headerTitleStyle: {fontWeight: "bold"}}} />
+        <Tab.Screen name={"Search"} component={SearchScreen} options={{ headerTitleAlign: "center", headerTitleStyle: {fontWeight: "bold"}, headerShown: false }}/>
+        <Tab.Screen name={"Profile"} component={ProfileScreen} options={{ headerTitleAlign: "center", headerTitleStyle: {fontWeight: "bold"} }} />
+        <Tab.Screen name={"Shopping"} component={ShoppingCart} options={{ headerTitleAlign: "center", headerTitleStyle: {fontWeight: "bold"} }} />
 
       </Tab.Navigator>
 
-
     </NavigationContainer>
     
-  
-  
-
   );
 }
 

@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/core'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { auth } from '../firebase'
-import MainNavigation from '../navigation/MainNavigation'
+
 
 const HomeScreen = () => {
 
@@ -26,8 +26,6 @@ const HomeScreen = () => {
 
     </View>
 
-
-    
   )
 }
 
