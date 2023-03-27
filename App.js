@@ -10,6 +10,7 @@ import RegisterScreen from "./screens/RegisterScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import SearchScreen from "./screens/SearchScreen";
+import GameScreen from "./screens/GameScreen";
 import ShoppingCartScreen from './screens/ShoppingCartScreen';
 import ThemeContext from "./components/ThemeContext";
 
@@ -71,6 +72,7 @@ export default function App() {
               component={RegisterScreen}
             />
             <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Game" component={GameScreen} />
           </Stack.Navigator>
         </NavigationContainer>
     );
@@ -109,6 +111,7 @@ export default function App() {
           <Tab.Screen name={"Home"} component={HomeScreen} />
           <Tab.Screen name={"Search"} component={SearchScreen} options={{headerShown: false}} />
           <Tab.Screen name={"Profile"} component={ProfileScreen} />
+          <Tab.Screen name={"Game"} component={GameScreen} />
           <Tab.Screen name={"Shopping"} component={ShoppingCartScreen} options={{headerShown: false}}/>
         </Tab.Navigator>
       </NavigationContainer>
