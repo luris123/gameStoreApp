@@ -6,6 +6,7 @@ import {
   Text,
   View,
   FlatList,
+  Button,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -43,23 +44,29 @@ const SearchScreen = () => {
   const { theme } = useContext(ThemeContext);
 
   const [search, setSearch] = useState("");
-
-
-
-  //let games = []
+  const [pageNumber, setPageNumber] = useState(1);
   const [game, setGame] = useState();
 
   useEffect(() => {
-    const getGames = async () => {
-      const response = await axios.get(
-        "https://us-central1-gamestoreapp-69869.cloudfunctions.net/getAllGames?how_many_pages=1"
-      );
-      setGame(response.data.data);
-    };
+    
     getGames();
+    changePageNumber();
   }, []);
 
-  const matchedGames = game?.filter(games => games.name.toLowerCase().includes(search.toLowerCase()))
+  const getGames = async () => {
+    const response = await axios.get(
+      `https://us-central1-gamestoreapp-69869.cloudfunctions.net/getAllGames?how_many_pages=${pageNumber}`
+    );
+    setGame(response.data.data);
+  };
+
+  const changePageNumber = () => {
+    setPageNumber(pageNumber + 1);
+  };
+
+  const matchedGames = game?.filter((games) =>
+    games.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   if (game != undefined) {
     return (
@@ -91,6 +98,10 @@ const SearchScreen = () => {
 
         <View style={styles.cont3}>
           <Text style={styles.textHeader}>Products</Text>
+          <Button title="Load More" onPress={() => {
+            getGames();
+            changePageNumber();
+          }} />
 
           <FlatList
             data={matchedGames}
