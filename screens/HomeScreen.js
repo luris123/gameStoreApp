@@ -17,7 +17,7 @@ const HomeScreen = () => {
  useEffect(() => {
     getAllGenres()
       .then(result => {
-        console.log(result.data);
+        //console.log(result.data);
       })
       .catch(error => {
         console.log(error);
