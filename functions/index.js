@@ -30,12 +30,19 @@ exports.getAllGenres = functions.https.onRequest((request, response) => {
 exports.getAllGames = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
     try {
-      const res = await axios.get(
-        `https://api.rawg.io/api/games?key=${API_KEY}`
-      );
+
+        let results = [];
+
+        for (let i = 1; i <= request.query.how_many_pages; i++) {
+          let res = await axios.get(`https://api.rawg.io/api/games?key=${API_KEY}&page=${i}&page_size=40`);
+          res.data.results.forEach(result => {
+            results.push({"id": result.id ,"name": result.name, "background_image": result.background_image});
+          });
+        }
+
       response.send({
         "status": "success",
-        "data": res.data.results
+        "data": results
       });
     } catch (error) {
       response.send({
@@ -46,18 +53,22 @@ exports.getAllGames = functions.https.onRequest((request, response) => {
   });
 });
 
-exports.getDetailsAboutTheGame = functions.https.onCall(async (data, context) => {
+exports.getDetailsAboutTheGame = functions.https.onRequest((request, response) => {
+  cors(request, response, async () => {
     try {
       const res = await axios.get(
-        `https://api.rawg.io/api/games/${data.id}?key=${API_KEY}`
+        `https://api.rawg.io/api/games/${request.query.id}?key=${API_KEY}`
       );
-      return {
-        data: res.data
-      };
+      response.send({
+        "status": "success",
+        "data": res.data
+      });
     } 
     catch (error) {
-      return {
-        error: error
-      };
+      response.send({
+        "status": error,
+        "data": error
+      });
     }
+  });
 });
