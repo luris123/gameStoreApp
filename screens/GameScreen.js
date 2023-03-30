@@ -15,56 +15,48 @@ const GameScreen = ({navigation, route}) => {
   
   const { theme } = useContext(ThemeContext);
 
-  const [gameID, setGameID] = useState('223');
-
-  const [gameName, setGameName] = useState("?");
-  const [gameImage, setGameImage] = useState("https://media.rawg.io/media/games/310/3106b0e012271c5ffb16497b070be739.jpg");
-  const [gameDescription, setGameDescription] = useState("?");
-  const [gameRating, setGameRating] = useState("?");
-  const [gameRatings, setGameRatings] = useState("?");
-  const [gameDeveloper, setGameDeveloper] = useState("?");
-  const [gamePublisher, setGamePublisher] = useState("?");
-  const [gameReleaseDate, setGameReleaseDate] = useState("?");
-  const [gameTags, setGameTags] = useState([]);
+  const [game, setGame] = useState({});
 
   useEffect(() => {
     const getGames = async () => {
-      const response = await axios.get('https://us-central1-gamestoreapp-69869.cloudfunctions.net/getDetailsAboutTheGame?id='+gameID)
-      setGameName(response.data.data.name)
-      setGameImage(response.data.data.background_image)
-      setGameDescription(response.data.data.description_raw)
-      setGameRating(response.data.data.rating)
-      setGameDeveloper(response.data.data.developers[0].name)
-      setGamePublisher(response.data.data.publishers[0].name)
-      setGameReleaseDate(response.data.data.released)
+      const response = await axios.get('https://us-central1-gamestoreapp-69869.cloudfunctions.net/getDetailsAboutTheGame?id='+id)
+
       let tagArray =  response.data.data.tags
       for (let i = 0; i < tagArray.length; i++) {
         tagArray[i] = tagArray[i].name+" ";
       }
-      setGameTags(tagArray)
+      setGame({
+        name: response.data.data.name,
+        image: response.data.data.background_image,
+        description: response.data.data.description_raw,
+        rating: response.data.data.rating,
+        developer: response.data.data.developers[0].name,
+        publisher: response.data.data.publishers[0].name,
+        releaseDate: response.data.data.released,
+        tags: tagArray,
+      });
     }
     getGames();
   }, []);
     
   return (
     <SafeAreaView>
-    <Text style={theme === "light" ? styles.textMainLightHeader : styles.textMainDarkHeader}>{gameName}</Text>
+    <Text style={theme === "light" ? styles.textMainLightHeader : styles.textMainDarkHeader}>{game.name}</Text>
       <ScrollView style={styles.scrollView}>
         <View style={styles.homeContainer}>
-          <Image source={{uri:gameImage}} style = {{width: 400, height: 200, resizeMode: 'contain',}}/>
-          <Text style={theme === "light" ? styles.textLight : styles.textDark}>{gameDescription}</Text>
-          <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Rating: {gameRating}</Text>
+          <Image source={{uri: game.image}} style = {{width: 400, height: 200, resizeMode: 'contain',}}/>
+          <Text style={theme === "light" ? styles.textLight : styles.textDark}>{game.description}</Text>
+          <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Rating: {game.rating}</Text>
           <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Reviews</Text>
-          <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Publisher: {gamePublisher}</Text>
-          <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Developer: {gameDeveloper}</Text>
-          <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Released: {gameReleaseDate}</Text>
-          <Text style={theme === "light" ? styles.textLight : styles.textDark}>{gameTags}</Text>
+          <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Publisher: {game.publisher}</Text>
+          <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Developer: {game.developer}</Text>
+          <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Released: {game.releaseDate}</Text>
+          <Text style={theme === "light" ? styles.textLight : styles.textDark}>{game.tags}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
   )
 }
-//<Text style={theme === "light" ? styles.textLight : styles.textDark}>{gameDescription}</Text>
 
 export default GameScreen
 
