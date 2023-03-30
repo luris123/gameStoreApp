@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import React, { useState } from 'react'
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from "firebase/auth";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
@@ -10,46 +11,50 @@ const LoginScreen = () => {
 
     const navigation = useNavigation();
 
-    
+
     const handleLogin = () => {
         signInWithEmailAndPassword(auth, email, password)
-        .then(userCredentials => {
-            const user = userCredentials.user;
-            console.log('Logged in with', user.email);
-        })
-        .catch(error => alert(error.message));
+            .then((userCredentials) => {
+                const user = userCredentials.user;
+                console.log('Logged in with', user.email);
+            })
+            .then(async () => {
+                await AsyncStorage.setItem('@email', email);
+                await AsyncStorage.setItem('@password', password);
+            })
+            .catch(error => alert(error.message));
     }
 
 
-  return (
-    <KeyboardAvoidingView
-    style={styles.container}
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <View style={styles.inputContainer}>
-        <TextInput 
-        placeholder='Email'
-        value={email}
-        onChangeText={text => setEmail(text)}
-        style={styles.input}
-        />
-        <TextInput 
-        placeholder='Password'
-        value={password}
-        onChangeText={password => setPassword(password)}
-        style={styles.input}
-        secureTextEntry
-        />
-      </View>
-      <View style={styles.loginContainer}>
-        <TouchableOpacity onPress={handleLogin} style={styles.button}>
-            <Text style={styles.buttonOutline}>Login</Text>
-        </TouchableOpacity>
-        <Text style={styles.registerText1}>Need an account?</Text>
-        <Text style={styles.registerText2} onPress={() => navigation.replace('Register')}>Register here</Text>
-      </View>
-    </KeyboardAvoidingView>
-  )
+    return (
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder='Email'
+                    value={email}
+                    onChangeText={text => setEmail(text)}
+                    style={styles.input}
+                />
+                <TextInput
+                    placeholder='Password'
+                    value={password}
+                    onChangeText={password => setPassword(password)}
+                    style={styles.input}
+                    secureTextEntry
+                />
+            </View>
+            <View style={styles.loginContainer}>
+                <TouchableOpacity onPress={handleLogin} style={styles.button}>
+                    <Text style={styles.buttonOutline}>Login</Text>
+                </TouchableOpacity>
+                <Text style={styles.registerText1}>Need an account?</Text>
+                <Text style={styles.registerText2} onPress={() => navigation.replace('Register')}>Register here</Text>
+            </View>
+        </KeyboardAvoidingView>
+    )
 }
 
 export default LoginScreen

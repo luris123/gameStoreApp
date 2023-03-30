@@ -12,14 +12,20 @@ import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
-
+import GameScreen from "./GameScreen";
 import ThemeContext from "../components/ThemeContext";
+import { useNavigation } from '@react-navigation/native';
 
-const ProductCard = ({ game, bg }) => {
+
+
+
+const ProductCard = ({game, bg, id}) => {
   const { theme } = useContext(ThemeContext);
+  const navigation = useNavigation()
+  //navigator.navigate()
   return (
     <TouchableOpacity
-      onPress={() => navigator.navigate()}
+      onPress={() => navigation.navigate("Game", {id})}
       style={{
         width: "100%",
         marginVertical: 14,
@@ -56,6 +62,7 @@ const SearchScreen = () => {
   const [search, setSearch] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [game, setGame] = useState();
+  const navigation = useNavigation()
 
   useEffect(() => {
     getGames();
@@ -78,10 +85,14 @@ const SearchScreen = () => {
   );
 
   if (game != undefined) {
+
+    //props.navigation.goBack()
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Feather name="chevron-left" color="#FFF" size={25} />
           </TouchableOpacity>
           <Feather name="filter" color="#FFF" size={25} />
@@ -119,7 +130,7 @@ const SearchScreen = () => {
             showsVerticalScrollIndicator={false}
             data={matchedGames}
             renderItem={({ item }) => (
-              <ProductCard game={item.name} bg={item.background_image} />
+              <ProductCard game={item.name} bg={item.background_image} id={item.id} />
             )}
             keyExtractor={(item) => item.id}
             numColumns={2}
@@ -137,11 +148,13 @@ const SearchScreen = () => {
         </View>
       </View>
     );
+
+
   } else {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          <TouchableOpacity onPress={() => console.log("asd")}>
             <Feather name="chevron-left" color="#FFF" size={25} />
           </TouchableOpacity>
           <Feather name="filter" color="#FFF" size={25} />

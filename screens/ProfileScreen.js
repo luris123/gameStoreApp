@@ -4,6 +4,8 @@ import { auth } from "../firebase";
 import ThemeContext from "../components/ThemeContext";
 import SwitchWithText from "../components/SwitchWithText";
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const ProfileScreen = ({ navigation }) => {
   const { theme, setTheme } = useContext(ThemeContext);
 
@@ -11,10 +13,12 @@ const ProfileScreen = ({ navigation }) => {
     setTheme(theme === "light" ? "dark" : "light");
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    await AsyncStorage.removeItem('@email');
+    await AsyncStorage.removeItem('@password');
     auth
       .signOut()
-      .then(() => {
+      .then(async () => {
         console.log("Signed out");
       })
       .catch((error) => alert(error.message));
