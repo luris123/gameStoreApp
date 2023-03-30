@@ -13,19 +13,25 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useState, useContext, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import axios from "axios";
-
+import GameScreen from "./GameScreen";
 import ThemeContext from "../components/ThemeContext";
+import { useNavigation } from '@react-navigation/native';
 
 
-const ProductCard = ({ game, bg }) => {
+
+
+const ProductCard = ({ game, bg}) => {
   const { theme } = useContext(ThemeContext);
+  const navigation = useNavigation()
+  //navigator.navigate()
   return (
 
-    <TouchableOpacity onPress={() => navigator.navigate()} style={{ width: "100%", marginVertical: 14, paddingRight: 30, paddingLeft: 30 }}>
+    <TouchableOpacity onPress={() => navigation.navigate('Game') } style={{ width: "100%", marginVertical: 14, paddingRight: 30, paddingLeft: 30 }}>
 
       <View style={styles.bodyContainer}>
         <View style={styles.innerProducCard}>
         </View>
+
 
         <Image style={styles.img} source={{ uri: bg }} />
       </View>
@@ -56,6 +62,7 @@ const SearchScreen = () => {
   const [search, setSearch] = useState("");
   const [pageNumber, setPageNumber, setValue] = useState(1);
   const [game, setGame] = useState();
+  const navigation = useNavigation()
 
   useEffect(() => {
     
@@ -80,10 +87,14 @@ const SearchScreen = () => {
 
 
   if (game != undefined) {
+
+    //props.navigation.goBack()
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Feather name="chevron-left" color="#FFF" size={25} />
           </TouchableOpacity>
           <Feather name="filter" color="#FFF" size={25} />
@@ -143,7 +154,7 @@ const SearchScreen = () => {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          <TouchableOpacity onPress={() => console.log("asd")}>
             <Feather name="chevron-left" color="#FFF" size={25} />
           </TouchableOpacity>
           <Feather name="filter" color="#FFF" size={25} />

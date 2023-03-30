@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+//import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { auth } from "./firebase";
 import React, { useEffect, useState } from "react";
@@ -15,7 +16,7 @@ import ShoppingCartScreen from './screens/ShoppingCartScreen';
 import ThemeContext from "./components/ThemeContext";
 
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 
@@ -45,42 +46,71 @@ export default function App() {
 
   useEffect(() => {
     auth.onAuthStateChanged(user => {
-         if(user){
-             setUser(true)
+      if (user) {
+        setUser(true)
 
-         } else {
-          setUser(false)
-         }
-     });
+      } else {
+        setUser(false)
+      }
+    });
 
- }, []);
+  }, []);
 
 
 
   if (user === false) {
     return (
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="Login"
-              component={LoginScreen}
-            />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="Register"
-              component={RegisterScreen}
-            />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Game" component={GameScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Login"
+            component={LoginScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Register"
+            component={RegisterScreen}
+          />
+          {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
+
+        </Stack.Navigator>
+      </NavigationContainer>
     );
   }
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
       <NavigationContainer theme={theme === "light" ? lightTheme : darkTheme}>
+        <Stack.Navigator>
+
+        
+
+          <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+
+          <Stack.Screen name="Game" component={GameScreen} options={{ headerShown: false }} />
+
+          
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ThemeContext.Provider>
+
+
+  )
+
+}
+
+
+const TabNav = () => {
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      <NavigationContainer theme={theme === "light" ? lightTheme : darkTheme}>
+
+        {/* <Stack.Navigator>
+          <Stack.Screen name="GameScreen" component={GameScreen} />
+        </Stack.Navigator> */}
+
+
         <Tab.Navigator
           initialRouteName={"Home"}
           screenOptions={({ route }) => ({
@@ -109,13 +139,13 @@ export default function App() {
           }}
         >
           <Tab.Screen name={"Home"} component={HomeScreen} />
-          <Tab.Screen name={"Search"} component={SearchScreen} options={{headerShown: false}} />
+          <Tab.Screen name={"Search"} component={SearchScreen} options={{ headerShown: false }} />
           <Tab.Screen name={"Profile"} component={ProfileScreen} />
-          <Tab.Screen name={"Game"} component={GameScreen} />
-          <Tab.Screen name={"Shopping"} component={ShoppingCartScreen} options={{headerShown: false}}/>
+          <Tab.Screen name={"Shopping"} component={ShoppingCartScreen} options={{ headerShown: false }} />
         </Tab.Navigator>
       </NavigationContainer>
     </ThemeContext.Provider>
 
   );
+
 }
