@@ -19,13 +19,13 @@ import { useNavigation } from '@react-navigation/native';
 
 
 
-const ProductCard = ({ game, bg}) => {
+const ProductCard = ({game, bg, id}) => {
   const { theme } = useContext(ThemeContext);
   const navigation = useNavigation()
   //navigator.navigate()
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Game")}
+      onPress={() => navigation.navigate("Game", {id})}
       style={{
         width: "100%",
         marginVertical: 14,
@@ -130,7 +130,7 @@ const SearchScreen = () => {
             showsVerticalScrollIndicator={false}
             data={matchedGames}
             renderItem={({ item }) => (
-              <ProductCard game={item.name} bg={item.background_image} />
+              <ProductCard game={item.name} bg={item.background_image} id={item.id} />
             )}
             keyExtractor={(item) => item.id}
             numColumns={2}
@@ -148,6 +148,8 @@ const SearchScreen = () => {
         </View>
       </View>
     );
+
+
   } else {
     return (
       <View style={styles.container}>
