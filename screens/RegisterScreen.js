@@ -9,8 +9,12 @@ import {
   Platform,
 } from "react-native";
 import React, { useState } from "react";
+
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -22,7 +26,18 @@ const RegisterScreen = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        console.log("Registered with", user.email);
+        const db = getDatabase();
+        set(ref(db, "users/" + user.uid), {
+          email: email,
+          password: password,
+          darkMode: false,
+          uid: user.uid,
+        });
+
+      })
+      .then(async () => {
+        await AsyncStorage.setItem('@email', email);
+        await AsyncStorage.setItem('@password', password);
       })
       .catch((error) => alert(error.message));
   };
