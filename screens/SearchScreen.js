@@ -6,12 +6,11 @@ import {
   Text,
   View,
   FlatList,
-  Button
+  Button,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useState, useContext, useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import axios from "axios";
 import GameScreen from "./GameScreen";
 import ThemeContext from "../components/ThemeContext";
@@ -25,13 +24,17 @@ const ProductCard = ({ game, bg}) => {
   const navigation = useNavigation()
   //navigator.navigate()
   return (
-
-    <TouchableOpacity onPress={() => navigation.navigate('Game') } style={{ width: "100%", marginVertical: 14, paddingRight: 30, paddingLeft: 30 }}>
-
-      <View style={styles.bodyContainer}>
-        <View style={styles.innerProducCard}>
-        </View>
-
+    <TouchableOpacity
+      onPress={() => navigation.navigate("Game")}
+      style={{
+        width: "100%",
+        marginVertical: 14,
+        paddingRight: 30,
+        paddingLeft: 30,
+      }}
+    >
+      <View style={theme === "light" ? styles.bodyContainerLight : styles.bodyContainerDark}>
+        <View style={theme === "light" ? styles.innerProductCardLight : styles.innerProductCardDark}></View>
 
         <Image style={styles.img} source={{ uri: bg }} />
       </View>
@@ -39,8 +42,7 @@ const ProductCard = ({ game, bg}) => {
       <Text
         style={{
           fontSize: 13,
-          backgroundColor: "#D3D3D3",
-         // backgroundColor: "#E5E5E5",
+          backgroundColor: theme === "light" ? "#D3D3D3" : "#333333",
           borderRadius: 10,
           fontWeight: "600",
           marginBottom: 2,
@@ -52,20 +54,17 @@ const ProductCard = ({ game, bg}) => {
         {game}
       </Text>
     </TouchableOpacity>
-
   );
 };
 
 const SearchScreen = () => {
-  
   const { theme } = useContext(ThemeContext);
   const [search, setSearch] = useState("");
-  const [pageNumber, setPageNumber, setValue] = useState(1);
+  const [pageNumber, setPageNumber] = useState(1);
   const [game, setGame] = useState();
   const navigation = useNavigation()
 
   useEffect(() => {
-    
     getGames();
     changePageNumber();
   }, []);
@@ -84,7 +83,6 @@ const SearchScreen = () => {
   const matchedGames = game?.filter((games) =>
     games.name.toLowerCase().includes(search.toLowerCase())
   );
-
 
   if (game != undefined) {
 
@@ -118,38 +116,38 @@ const SearchScreen = () => {
           </View>
         </View>
 
-        <View style={styles.cont3}>
-          <Text style={styles.textHeader}>Products</Text>
-          <Button  title = "load more"  onPress={() => {
-            getGames();
-            changePageNumber();
-            
-          }} />
+        <View style={theme === "light" ? styles.cont3Light : styles.cont3Dark}>
+          <Text style={theme === "light" ? styles.textHeaderLight : styles.textHeaderDark}>Products</Text>
+          <Button
+            title="load more"
+            onPress={() => {
+              getGames();
+              changePageNumber();
+            }}
+          />
 
-          <FlatList showsVerticalScrollIndicator={false}
-
-                data={matchedGames}
-                renderItem={({ item }) => (
-                  <ProductCard game={item.name} bg={item.background_image} />
-                )}
-                keyExtractor={(item) => item.id}
-                numColumns={2}
-              > </FlatList>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={matchedGames}
+            renderItem={({ item }) => (
+              <ProductCard game={item.name} bg={item.background_image} />
+            )}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
+          >
+            {" "}
+          </FlatList>
 
           <View
             style={{
               flexDirection: "row",
               flexWrap: "wrap",
               justifyContent: "space-around",
-            }} >
-
-          </View>
-
+            }}
+          ></View>
         </View>
       </View>
     );
-
-
   } else {
     return (
       <View style={styles.container}>
@@ -178,8 +176,8 @@ const SearchScreen = () => {
           </View>
         </View>
 
-        <View style={styles.cont3}>
-          <Text style={styles.textHeader}>Products</Text>
+        <View style={theme === "light" ? styles.cont3Light : styles.cont3Dark}>
+          <Text style={theme === "light" ? styles.textHeaderLight : styles.textHeaderDark}>Products</Text>
 
           <Text>Loading...</Text>
 
@@ -189,19 +187,18 @@ const SearchScreen = () => {
               flexWrap: "wrap",
               justifyContent: "space-around",
             }}
-          >
-
-          </View>
+          ></View>
         </View>
       </View>
     );
-
   }
 };
 
 export default SearchScreen;
 
 const styles = StyleSheet.create({
+
+  
   container: {
     height: "100%",
     alignItems: "center",
@@ -255,19 +252,25 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 
-  cont3: {
+  cont3Light: {
     flex: 0.85,
-
     paddingLeft: 10,
-
-    //backgroundColor: "#19b342",
     backgroundColor: "#f2f2f2",
     width: "100%",
     borderTopStartRadius: 50,
     borderTopEndRadius: 50,
   },
 
-  bodyContainer: {
+  cont3Dark: {
+    flex: 0.85,
+    paddingLeft: 10,
+    backgroundColor: "#121212",
+    width: "100%",
+    borderTopStartRadius: 50,
+    borderTopEndRadius: 50,
+  },
+
+  bodyContainerLight: {
     width: "100%",
     height: 125,
     borderRadius: 10,
@@ -278,7 +281,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 
-  innerProducCard: {
+  bodyContainerDark: {
+    width: "100%",
+    height: 125,
+    borderRadius: 10,
+    backgroundColor: "#333333",
+    position: "relative",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+
+  innerProductCardLight: {
     position: "absolute",
     width: "20%",
     height: "24%",
@@ -291,13 +305,36 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  textHeader: {
+  innerProductCardDark: {
+    position: "absolute",
+    width: "20%",
+    height: "24%",
+    backgroundColor: "#333333",
+    top: 0,
+    left: 0,
+    borderTopLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  textHeaderLight: {
     paddingTop: 20,
     paddingStart: 20,
     fontSize: 18,
     paddingRight: 80,
     lineHeight: 25,
     fontWeight: "bold",
+  },
+
+  textHeaderDark: {
+    paddingTop: 20,
+    paddingStart: 20,
+    fontSize: 18,
+    paddingRight: 80,
+    lineHeight: 25,
+    fontWeight: "bold",
+    color: "lightgrey",
   },
 
   textDescription: {

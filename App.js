@@ -141,7 +141,12 @@ const TabNav = () => {
           <Tab.Screen name={"Home"} component={HomeScreen} />
           <Tab.Screen name={"Search"} component={SearchScreen} options={{ headerShown: false }} />
           <Tab.Screen name={"Profile"} component={ProfileScreen} />
+<<<<<<< HEAD
           <Tab.Screen name={"Shopping"} component={ShoppingCartScreen} options={{ headerShown: false }} />
+=======
+          <Tab.Screen name={"Game"} component={GameScreen} options={{headerShown: false}} />
+          <Tab.Screen name={"Shopping"} component={ShoppingCartScreen} options={{headerShown: false}}/>
+>>>>>>> 25bf576a0862a0e314b4a7d769abe92e1e4f6062
         </Tab.Navigator>
       </NavigationContainer>
     </ThemeContext.Provider>
