@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+//import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { auth } from "./firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -17,7 +18,7 @@ import ThemeContext from "./components/ThemeContext";
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 
@@ -96,8 +97,8 @@ export default function App() {
             name="Register"
             component={RegisterScreen}
           />
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Game" component={GameScreen} />
+          {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
+
         </Stack.Navigator>
       </NavigationContainer>
     );
@@ -106,6 +107,25 @@ export default function App() {
     return (
       <ThemeContext.Provider value={{ theme, setTheme }}>
         <NavigationContainer theme={theme === "light" ? lightTheme : darkTheme}>
+          <Stack.Navigator>
+            <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Game" component={GameScreen} options={{ headerShown: false }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ThemeContext.Provider>
+    )
+  }
+
+  const TabNav = () => {
+    return (
+      <ThemeContext.Provider value={{ theme, setTheme }}>
+        <NavigationContainer theme={theme === "light" ? lightTheme : darkTheme}>
+
+          {/* <Stack.Navigator>
+          <Stack.Screen name="GameScreen" component={GameScreen} />
+        </Stack.Navigator> */}
+
+
           <Tab.Navigator
             initialRouteName={"Home"}
             screenOptions={({ route }) => ({
@@ -136,12 +156,12 @@ export default function App() {
             <Tab.Screen name={"Home"} component={HomeScreen} />
             <Tab.Screen name={"Search"} component={SearchScreen} options={{ headerShown: false }} />
             <Tab.Screen name={"Profile"} component={ProfileScreen} />
-            <Tab.Screen name={"Game"} component={GameScreen} />
+            <Tab.Screen name={"Game"} component={GameScreen} options={{ headerShown: false }} />
             <Tab.Screen name={"Shopping"} component={ShoppingCartScreen} options={{ headerShown: false }} />
           </Tab.Navigator>
         </NavigationContainer>
       </ThemeContext.Provider>
 
     );
-  }
-}
+  };
+};
