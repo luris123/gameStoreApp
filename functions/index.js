@@ -8,7 +8,7 @@ require('dotenv').config();
 
 const API_KEY = process.env.API_KEY;
 
-exports.getAllGenres = functions.https.onRequest((request, response) => {
+exports.getAllGenres = functions.region("europe-west1").https.onRequest((request, response) => {
   cors(request, response, async () => {
     try {
       const res = await axios.get(
@@ -27,23 +27,32 @@ exports.getAllGenres = functions.https.onRequest((request, response) => {
   });
 });
 
-exports.getAllGames = functions.https.onRequest((request, response) => {
+exports.getGames = functions.region("europe-west1").https.onRequest((request, response) => {
   cors(request, response, async () => {
     try {
+      let results = [];
 
-        let results = [];
+      const page = request.query.page;
 
-        for (let i = 1; i <= request.query.how_many_pages; i++) {
-          let res = await axios.get(`https://api.rawg.io/api/games?key=${API_KEY}&page=${i}&page_size=40`);
-          res.data.results.forEach(result => {
-            results.push({"id": result.id ,"name": result.name, "background_image": result.background_image});
-          });
-        }
+      if(page <= 0 || page == undefined || page == null){
+        response.send({
+          "status": "error",
+          "data": "Invalid page number"
+        });
+        return;
+      }
+
+      let res = await axios.get(`https://api.rawg.io/api/games?key=${API_KEY}&page=${page}&page_size=40`);
+
+      res.data.results.forEach(result => {
+        results.push({ "id": result.id, "name": result.name, "background_image": result.background_image });
+      });
 
       response.send({
         "status": "success",
         "data": results
       });
+
     } catch (error) {
       response.send({
         "status": error,
@@ -53,7 +62,7 @@ exports.getAllGames = functions.https.onRequest((request, response) => {
   });
 });
 
-exports.getDetailsAboutTheGame = functions.https.onRequest((request, response) => {
+exports.getDetailsAboutTheGame = functions.region("europe-west1").https.onRequest((request, response) => {
   cors(request, response, async () => {
     try {
       const res = await axios.get(
@@ -63,7 +72,7 @@ exports.getDetailsAboutTheGame = functions.https.onRequest((request, response) =
         "status": "success",
         "data": res.data
       });
-    } 
+    }
     catch (error) {
       response.send({
         "status": error,
