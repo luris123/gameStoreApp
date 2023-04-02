@@ -19,7 +19,7 @@ const GameScreen = ({navigation, route}) => {
 
   useEffect(() => {
     const getGames = async () => {
-      const response = await axios.get('https://us-central1-gamestoreapp-69869.cloudfunctions.net/getDetailsAboutTheGame?id='+id)
+      const response = await axios.get('https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getDetailsAboutTheGame?id='+id)
 
       let tagArray =  response.data.data.tags
       for (let i = 0; i < tagArray.length; i++) {
