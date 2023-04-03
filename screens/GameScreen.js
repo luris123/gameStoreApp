@@ -12,7 +12,7 @@ const GameScreen = ({navigation, route}) => {
 
   const {id} = route.params
   console.log(id)
-  
+
   const { theme } = useContext(ThemeContext);
 
   const [gameID, setGameID] = useState('223');

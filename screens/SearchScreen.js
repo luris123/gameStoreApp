@@ -339,32 +339,6 @@ const styles = StyleSheet.create({
     color: "lightgrey",
   },
 
-  textDescription: {
-    fontSize: 12,
-    backgroundColor: "#dfe6e0",
-    letterSpacing: 1,
-    fontWeight: "bold",
-  },
-
-  btn: {
-    backgroundColor: "#E2443B",
-    paddingHorizontal: 60,
-    paddingVertical: 12,
-    borderRadius: 30,
-  },
-  btnText: {
-    fontSize: 20,
-    color: "#FFF",
-  },
-
-  cont1: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    justifyContent: "space-between",
-    marginTop: 40,
-  },
-
   img: {
     height: "80%",
     width: "80%",
