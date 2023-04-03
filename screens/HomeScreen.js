@@ -1,27 +1,16 @@
-
-import { useNavigation } from '@react-navigation/core'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import ThemeContext from "../components/ThemeContext";
-
 import React, { useEffect, useContext } from 'react'
-import { auth, functions } from '../firebase'
-import { httpsCallable } from 'firebase/functions';
+import axios from 'axios'
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import SearchScreen from './SearchScreen';
 import ShoppingCartScreen from './ShoppingCartScreen';
 import ProfileScreen from './ProfileScreen';
-import { useState } from 'react';
-
-import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import CategoryScreen from './CategoryScreen';
 
-
-
-
-const getAllGenres = httpsCallable(functions, 'getAllGenres');
+import { useNavigation } from '@react-navigation/core'
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -29,49 +18,47 @@ const HomeScreen = () => {
   const Tab = createBottomTabNavigator();
 
   useEffect(() => {
-    getAllGenres()
-      .then(result => {
-        //console.log(result.data);
-      })
-      .catch(error => {
-        console.log(error);
-      })
+    const getGenres = async () => {
+      const response = await axios.get('https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getAllGenres');
+      //console.log(response.data);
+    }
+    getGenres();
   }, [])
 
 
   return (
-    
-      <Tab.Navigator
-          initialRouteName={"Categories"}
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
 
-              if (route.name === "Categories") {
-                iconName = focused ? "game-controller" : "game-controller-outline";
-               }else if (route.name === "Profile") {
-                iconName = focused ? "person" : "person-outline";
-              } else if (route.name === "Search") {
-                iconName = focused ? "search" : "search-outline";
-              } else if (route.name === "Shopping") {
-                iconName = focused ? "card-outline" : "card-outline"
-              }
+    <Tab.Navigator
+      initialRouteName={"Categories"}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
 
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-          })}
-          ScreenOptions={{
-            activeTintColor: "tomato",
-            inactiveTintColor: "grey",
-            labelStyle: { paddingBottom: 10, fontSize: 10 },
-            style: { padding: 10, height: 70 },
-          }}
-        >
-          <Tab.Screen name={"Categories"} component={CategoryScreen} />
-          <Tab.Screen name={"Search"} component={SearchScreen} options={{ headerShown: false }} />
-          <Tab.Screen name={"Profile"} component={ProfileScreen} />
-          <Tab.Screen name={"Shopping"} component={ShoppingCartScreen} options={{ headerShown: false }} />
-        </Tab.Navigator>
+          if (route.name === "Categories") {
+            iconName = focused ? "game-controller" : "game-controller-outline";
+          } else if (route.name === "Profile") {
+            iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "Search") {
+            iconName = focused ? "search" : "search-outline";
+          } else if (route.name === "Shopping") {
+            iconName = focused ? "card-outline" : "card-outline"
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+      ScreenOptions={{
+        activeTintColor: "tomato",
+        inactiveTintColor: "grey",
+        labelStyle: { paddingBottom: 10, fontSize: 10 },
+        style: { padding: 10, height: 70 },
+      }}
+    >
+      <Tab.Screen name={"Categories"} component={CategoryScreen} />
+      <Tab.Screen name={"Search"} component={SearchScreen} options={{ headerShown: false }} />
+      <Tab.Screen name={"Profile"} component={ProfileScreen} />
+      <Tab.Screen name={"Shopping"} component={ShoppingCartScreen} options={{ headerShown: false }} />
+    </Tab.Navigator>
 
   );
 

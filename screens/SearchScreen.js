@@ -61,7 +61,7 @@ const SearchScreen = () => {
   const { theme } = useContext(ThemeContext);
   const [search, setSearch] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
-  const [game, setGame] = useState();
+  const [game, setGame] = useState([]);
   const navigation = useNavigation()
 
   useEffect(() => {
@@ -71,9 +71,10 @@ const SearchScreen = () => {
 
   const getGames = async () => {
     const response = await axios.get(
-      `https://us-central1-gamestoreapp-69869.cloudfunctions.net/getAllGames?how_many_pages=${pageNumber}`
+      `https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getGames?page=${pageNumber}`
     );
-    setGame(response.data.data);
+
+    setGame([...game, ...response.data.data]);
   };
 
   const changePageNumber = () => {
