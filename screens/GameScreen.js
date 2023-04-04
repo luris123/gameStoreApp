@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState }  from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Image, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Image, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ThemeContext from "../components/ThemeContext";
 import axios from 'axios';
