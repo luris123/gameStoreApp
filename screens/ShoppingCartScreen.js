@@ -1,17 +1,27 @@
 import React, { useContext } from "react";
-import { View, Text, StyleSheet, FlatList, useState } from "react-native";
+import { View, Text, StyleSheet, FlatList, useState, Image } from "react-native";
 import ThemeContext from "../components/ThemeContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Feather from "@expo/vector-icons/Feather";
+import GameScreen from "./GameScreen";
+
+import ProductCartContext from "../components/ProductContext";
 
 
-const RenderCart = ({bg}) => {
+
+
+const RenderCart = ({item}) => {
+
+  console.log(item.background_image)
+
+  // const { product } = useContext(ProductContext)
 
   return (
     <TouchableOpacity styles={styles.touchableOp}>
 
       <View style={styles.productView}>
-        <Image style={styles.imageStyle} source={{ uri: bg }} />
+
+        <Image style={styles.imageStyle} source={{ uri: item.image }} />
         
       </View>
 
@@ -24,7 +34,7 @@ const RenderCart = ({bg}) => {
           maxWidth: '85%',
           marginRight: 4,}}>
 
-          tuotteen nimi
+          {item.name}
         </Text>
 
         <View style={styles.spesificInfo}>
@@ -47,21 +57,7 @@ const RenderCart = ({bg}) => {
 
 const ShoppingCartScreen = () => {
 
-
-  const [game, setGame] = useState();
-
-  useEffect(() => {
-    getGames();
-    changePageNumber();
-  }, []);
-
-  const getGames = async () => {
-    const response = await axios.get(
-      `https://us-central1-gamestoreapp-69869.cloudfunctions.net/getAllGames?how_many_pages=${pageNumber}`
-    );
-    setGame(response.data.data);
-  };
-
+  const { product, setProduct } = useContext(ProductCartContext)
 
   const { theme } = useContext(ThemeContext);
 
@@ -105,12 +101,13 @@ const ShoppingCartScreen = () => {
 
           <FlatList
             showsVerticalScrollIndicator={false}
-            // data={matchedGames}
+            data={product}
             renderItem={({ item }) => (
-              <RenderCart  bg={item.background_image}  />
+              <RenderCart  item={item}  />
+
             )}
             keyExtractor={(item) => item.id}
-            numColumns={2}
+            // numColumns={1}
           >
             {" "}
           </FlatList>

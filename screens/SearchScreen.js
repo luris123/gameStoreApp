@@ -7,6 +7,7 @@ import {
   View,
   FlatList,
   Button,
+  Pressable,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -19,13 +20,13 @@ import { useNavigation } from '@react-navigation/native';
 
 
 
-const ProductCard = ({game, bg, id}) => {
+const ProductCard = ({ game, bg, id }) => {
   const { theme } = useContext(ThemeContext);
   const navigation = useNavigation()
   //navigator.navigate()
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Game", {id})}
+      onPress={() => navigation.navigate("Game", { id })}
       style={{
         width: "100%",
         marginVertical: 14,
@@ -92,7 +93,7 @@ const SearchScreen = () => {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          
+
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Feather name="chevron-left" color="#FFF" size={25} />
           </TouchableOpacity>
@@ -119,13 +120,20 @@ const SearchScreen = () => {
 
         <View style={theme === "light" ? styles.cont3Light : styles.cont3Dark}>
           <Text style={theme === "light" ? styles.textHeaderLight : styles.textHeaderDark}>Products</Text>
-          <Button
-            title="load more"
+
+
+          {/* <View style={{width: 250, paddingStart: 120, justifyContent: "center", alignContent: "center", alignItems: "center"}}>
+        <Button
+            
+            title="Load More"
             onPress={() => {
               getGames();
               changePageNumber();
             }}
+            
           />
+        </View> */}
+
 
           <FlatList
             showsVerticalScrollIndicator={false}
@@ -146,7 +154,20 @@ const SearchScreen = () => {
               justifyContent: "space-around",
             }}
           ></View>
+
+          <View style={{ width: 250, paddingStart: 120, }}>
+            <Button
+
+              title="Load More"
+              onPress={() => {
+                getGames();
+                changePageNumber();
+              }}
+
+            />
+          </View>
         </View>
+
       </View>
     );
 
@@ -201,7 +222,7 @@ export default SearchScreen;
 
 const styles = StyleSheet.create({
 
-  
+
   container: {
     height: "100%",
     alignItems: "center",
@@ -345,4 +366,6 @@ const styles = StyleSheet.create({
     width: "80%",
     resizeMode: "cover",
   },
+
+
 });

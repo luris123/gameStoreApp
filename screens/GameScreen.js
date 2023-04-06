@@ -1,10 +1,13 @@
 import React, { useEffect, useContext, useState }  from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Image, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Image, Text, View, Button } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ThemeContext from "../components/ThemeContext";
 //import { auth, functions } from '../firebase'
 //import { httpsCallable } from 'firebase/functions';
 import axios from 'axios';
+import ProductContext from "../components/ProductContext";
+import ProductCartContext from "../components/ProductContext";
+
 
 //const getDetailsAboutTheGame = httpsCallable(functions, 'getDetailsAboutTheGame');
 
@@ -12,6 +15,8 @@ const GameScreen = ({navigation, route}) => {
 
   const {id} = route.params
   console.log(id)
+
+  const { product, setProduct } = useContext(ProductCartContext)
 
   const { theme } = useContext(ThemeContext);
 
@@ -38,13 +43,19 @@ const GameScreen = ({navigation, route}) => {
     }
     getGames();
   }, []);
-    
+
+  const handleAddGameToCart = () => {
+    console.log(product.length);
+    setProduct([...product, game]);
+  }
+
+  
   return (
     <SafeAreaView>
     <Text style={theme === "light" ? styles.textMainLightHeader : styles.textMainDarkHeader}>{game.name}</Text>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
         <View style={styles.homeContainer}>
-          <Image source={{uri: game.image}} style = {{width: 400, height: 200, resizeMode: 'contain',}}/>
+          <Image source={{uri: game.image}} style = {{width: "100%", height: 200, resizeMode: 'contain',}}/>
           <Text style={theme === "light" ? styles.textLight : styles.textDark}>{game.description}</Text>
           <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Rating: {game.rating}</Text>
           <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Reviews</Text>
@@ -52,7 +63,11 @@ const GameScreen = ({navigation, route}) => {
           <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Developer: {game.developer}</Text>
           <Text style={theme === "light" ? styles.textLightHeader : styles.textDarkHeader}>Released: {game.releaseDate}</Text>
           <Text style={theme === "light" ? styles.textLight : styles.textDark}>{game.tags}</Text>
+
+            <Button title="Add to shopping cart" onPress={handleAddGameToCart}></Button>
+          
         </View>
+        
       </ScrollView>
     </SafeAreaView>
   )

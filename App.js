@@ -4,7 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { auth } from "./firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState, useContext } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import LoginScreen from "./screens/LoginScreen";
@@ -18,6 +18,11 @@ import ThemeContext from "./components/ThemeContext";
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { ProductContext } from "./components/ProductContext";
+
+
+
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -26,6 +31,8 @@ export default function App() {
 
   const [user, setUser] = useState(null);
   const [theme, setTheme] = useState("light");
+
+
 
   const lightTheme = {
     colors: {
@@ -82,6 +89,8 @@ export default function App() {
     }
   });
 
+  
+
 
   if (user === false) {
     return (
@@ -105,14 +114,20 @@ export default function App() {
   } else if (user === true) {
 
     return (
+
       <ThemeContext.Provider value={{ theme, setTheme }}>
-        <NavigationContainer theme={theme === "light" ? lightTheme : darkTheme}>
-          <Stack.Navigator>
-            <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Game" component={GameScreen} options={{ headerShown: false }} />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <ProductContext>
+          <NavigationContainer theme={theme === "light" ? lightTheme : darkTheme}>
+            <Stack.Navigator>
+              <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Game" component={GameScreen} options={{ headerShown: false }} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </ProductContext>
       </ThemeContext.Provider>
+
+
+
     )
   }
 };
