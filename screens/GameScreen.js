@@ -1,6 +1,5 @@
 import React, { useEffect, useContext, useState }  from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Image, Text, View, Button } from "react-native";
-import { ScrollView, StyleSheet, Image, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ThemeContext from "../components/ThemeContext";
 import axios from 'axios';
@@ -103,7 +102,11 @@ const GameScreen = ({navigation, route}) => {
             <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>Genres:</Text>
             <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>{game.genres}</Text>
           </View>
+
+          <Button title="Add to shopping cart" onPress={handleAddGameToCart}></Button>
         </View>
+
+        
         
       </ScrollView>
     </View>
