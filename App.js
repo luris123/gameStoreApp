@@ -19,6 +19,7 @@ import ThemeContext from "./components/ThemeContext";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { ProductContext } from "./components/ProductContext";
+import GamesByGenreScreen from "./screens/GamesByGenreScreen";
 
 
 
@@ -120,7 +121,8 @@ export default function App() {
           <NavigationContainer theme={theme === "light" ? lightTheme : darkTheme}>
             <Stack.Navigator>
               <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Game" component={GameScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="GamesByGenre" component={GamesByGenreScreen} options={{ headerShown: true }} />
+              <Stack.Screen name="Game" component={GameScreen} options={{ headerShown: true }} />
             </Stack.Navigator>
           </NavigationContainer>
         </ProductContext>
