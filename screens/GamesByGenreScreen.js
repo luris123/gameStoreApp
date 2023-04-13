@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
+import React, { useEffect, useState, memo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import axios from 'axios'
@@ -10,11 +10,10 @@ const GamesByGenreScreen = ({ route }) => {
 
     const { genre } = route.params
     const genreToLowerCase = genre.toLowerCase()
-    let noMorePages = false;
 
-    let pageNumber = 1;
-
+    const [pageNumber, setPageNumber] = useState(1);
     const [games, setGames] = useState([]);
+    const [loading, setLoading] = useState(false);  
 
     // Define an array of categories
     useEffect(() => {
@@ -22,10 +21,14 @@ const GamesByGenreScreen = ({ route }) => {
     }, []);
 
     const getGamesByGenre = async () => {
+        setLoading(true);
         const response = await axios.get(`https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getGamesByGenre?genre=${genreToLowerCase}&page=${pageNumber}`);
-
-        setGames([...games, ...response.data.results]);
-        console.log(pageNumber)
+        setGames(prevGames => [...prevGames, ...response.data.results])
+        setLoading(false);
+        //if there is a next page, increment the page number
+        if(response.data.next == true){
+            setPageNumber(pageNumber + 1)
+        }
     };
 
     // Render a category item
@@ -40,6 +43,12 @@ const GamesByGenreScreen = ({ route }) => {
         </TouchableOpacity>
     );
 
+    const renderFooter = () => {
+        return loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : null;
+    };
+
     return (
         <View style={[styles.container]}>
             <FlatList
@@ -48,11 +57,10 @@ const GamesByGenreScreen = ({ route }) => {
                 numColumns={2}
                 columnWrapperStyle={styles.categoriesContainer}
                 keyExtractor={(item, index) => `${item.id}-${index}`}
-                onEndReached={() => {
-                    pageNumber++;
-                    getGamesByGenre();
-                }}
-                onEndReachedThreshold={0.75}
+                onEndReached={getGamesByGenre}
+                onEndReachedThreshold={0.5}
+                initialNumToRender={10}
+                ListFooterComponent={renderFooter}
             />
         </View>
     );
