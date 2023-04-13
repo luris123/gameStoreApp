@@ -4,31 +4,37 @@ import { useNavigation } from '@react-navigation/native';
 
 import axios from 'axios'
 
-const CategoryScreen = () => {
+const GamesByGenreScreen = ({ route }) => {
 
     const navigation = useNavigation()
 
-    // Define state to manage selected category
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const { genre } = route.params
+    const genreToLowerCase = genre.toLowerCase()
+    let noMorePages = false;
 
-    const [categories, setCategories] = useState([]);
+    let pageNumber = 1;
+
+    const [games, setGames] = useState([]);
 
     // Define an array of categories
     useEffect(() => {
-        const getGenres = async () => {
-            const response = await axios.get('https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getAllGenres');
-            setCategories(response.data.results);
-        }
-        getGenres();
+        getGamesByGenre();
     }, []);
+
+    const getGamesByGenre = async () => {
+        const response = await axios.get(`https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getGamesByGenre?genre=${genreToLowerCase}&page=${pageNumber}`);
+
+        setGames([...games, ...response.data.results]);
+        console.log(pageNumber)
+    };
 
     // Render a category item
     const renderCategoryItem = ({ item }) => (
         <TouchableOpacity
-            onPress={() => navigation.navigate("GamesByGenre", { genre: item.name })}
+            onPress={() => navigation.navigate("Game", { id: item.id })}
         >
             <View style={[styles.categoryItem]}>
-                <Image style={[styles.categoryImage]} source={{ uri: item.image_background }} />
+                <Image style={[styles.categoryImage]} source={{ uri: item.background_image }} />
                 <Text style={[styles.categoryName]}>{item.name}</Text>
             </View>
         </TouchableOpacity>
@@ -37,11 +43,16 @@ const CategoryScreen = () => {
     return (
         <View style={[styles.container]}>
             <FlatList
-                data={categories}
+                data={games}
                 renderItem={renderCategoryItem}
-                keyExtractor={(item) => item.id}
                 numColumns={2}
                 columnWrapperStyle={styles.categoriesContainer}
+                keyExtractor={(item, index) => `${item.id}-${index}`}
+                onEndReached={() => {
+                    pageNumber++;
+                    getGamesByGenre();
+                }}
+                onEndReachedThreshold={0.75}
             />
         </View>
     );
@@ -52,7 +63,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
     },
-    
+
     categoriesContainer: {
         justifyContent: 'space-between',
         paddingHorizontal: 10,
@@ -84,4 +95,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default CategoryScreen;
+export default GamesByGenreScreen;
