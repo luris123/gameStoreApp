@@ -30,22 +30,22 @@ const GameScreen = ({navigation, route}) => {
     const getGames = async () => {
       const response = await axios.get('https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getDetailsAboutTheGame?id='+id)
 
-      let genreArray =  response.data.data.genres
+      let genreArray =  response.data.results.genres
       for (let i = 0; i < genreArray.length; i++) {
         genreArray[i] = genreArray[i].name+", ";
       }
-      let platformsArray =  response.data.data.platforms
+      let platformsArray =  response.data.results.platforms
       for (let i = 0; i < platformsArray.length; i++) {
         platformsArray[i] = platformsArray[i].platform.name+", ";
       }
       setGame({
-        name: response.data.data.name,
-        image: response.data.data.background_image,
-        description: response.data.data.description_raw,
-        developer: response.data.data.developers[0].name,
-        publisher: response.data.data.publishers[0].name,
-        releaseDate: response.data.data.released,
-        rating: response.data.data.rating,
+        name: response.data.results.name,
+        image: response.data.results.background_image,
+        description: response.data.results.description_raw,
+        developer: response.data.results.developers[0].name,
+        publisher: response.data.results.publishers[0].name,
+        releaseDate: response.data.results.released,
+        rating: response.data.results.rating,
         genres: genreArray,
         platforms: platformsArray,
       });
