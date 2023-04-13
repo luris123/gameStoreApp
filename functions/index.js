@@ -14,14 +14,16 @@ exports.getAllGenres = functions.region("europe-west1").https.onRequest((request
       const res = await axios.get(
         `https://api.rawg.io/api/genres?key=${API_KEY}`
       );
+      const results = res.data.results;
       response.send({
         "status": "success",
-        "data": res.data.results
+        results
       });
+
     } catch (error) {
       response.send({
         "status": error,
-        "data": error
+        "data": "Error occured"
       });
     }
   });
@@ -48,19 +50,79 @@ exports.getGames = functions.region("europe-west1").https.onRequest((request, re
         results.push({ "id": result.id, "name": result.name, "background_image": result.background_image });
       });
 
-      response.send({
-        "status": "success",
-        "data": results
-      });
+      //if next page exists
+      if(res.data.next){
+        response.send({
+          "status": "success",
+          results,
+          "next": true
+        });
+      }
+      else{
+        response.send({
+          "status": "success",
+          results,
+          "next": false
+        });
+      }
 
     } catch (error) {
       response.send({
         "status": error,
-        "data": error
+        "data": "Error occured"
       });
     }
   });
 });
+
+exports.getGamesByGenre = functions.region("europe-west1").https.onRequest((request, response) => {
+  cors(request, response, async () => {
+    try {
+      let results = [];
+
+      const genre = request.query.genre;
+      const page = request.query.page;
+
+      if(page <= 0 || page == undefined || page == null){
+        response.send({
+          "status": "error",
+          "data": "Invalid page number"
+        });
+        return;
+      }
+
+      const res = await axios.get(
+        `https://api.rawg.io/api/games?key=${API_KEY}&genres=${genre}&page=${page}&page_size=40`
+      );
+
+      res.data.results.forEach(result => {
+        results.push({ "id": result.id, "name": result.name, "background_image": result.background_image });
+      });
+
+      //if next page exists
+      if(res.data.next){
+        response.send({
+          "status": "success",
+          results,
+          "next": true
+        });
+      }
+      else{
+        response.send({
+          "status": "success",
+          results,
+          "next": false
+        });
+      }
+    } catch (error) {
+      response.send({
+        "status": error,
+        "data": "Error occured"
+      });
+    }
+  });
+});
+
 
 exports.getDetailsAboutTheGame = functions.region("europe-west1").https.onRequest((request, response) => {
   cors(request, response, async () => {
@@ -68,15 +130,18 @@ exports.getDetailsAboutTheGame = functions.region("europe-west1").https.onReques
       const res = await axios.get(
         `https://api.rawg.io/api/games/${request.query.id}?key=${API_KEY}`
       );
+
+      const results = res.data;
+
       response.send({
         "status": "success",
-        "data": res.data
+        results
       });
     }
     catch (error) {
       response.send({
         "status": error,
-        "data": error
+        "data": "Error occured"
       });
     }
   });
