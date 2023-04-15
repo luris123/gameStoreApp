@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState }  from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Image, Text, View, Button } from "react-native";
+import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ThemeContext from "../components/ThemeContext";
 import axios from 'axios';
@@ -61,6 +62,9 @@ const GameScreen = ({navigation, route}) => {
   
   return (
     <View style={{flex: 1}}>
+      <TouchableOpacity style={{paddingHorizontal: 16, paddingTop: 50}} onPress={() => navigation.goBack()}>
+            <Feather name="chevron-left" color="#701711" size={25} />
+      </TouchableOpacity>
       <Text style={theme === "light" ? styles.textMainLightHeader : styles.textMainDarkHeader}>{game.name}</Text>
       <ScrollView>
         <Image source={{uri: game.image}} style = {styles.img}/>
