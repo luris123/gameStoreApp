@@ -75,7 +75,7 @@ const SearchScreen = () => {
       `https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getGames?page=${pageNumber}`
     );
 
-    setGame([...game, ...response.data.data]);
+    setGame([...game, ...response.data.results]);
   };
 
   const changePageNumber = () => {
