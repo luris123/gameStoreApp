@@ -1,20 +1,26 @@
-import React, { useEffect, useContext, useState }  from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Image, Text, View, Button } from "react-native";
+import React, { useEffect, useContext, useState } from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Image,
+  Text,
+  View,
+  Button,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ThemeContext from "../components/ThemeContext";
-import axios from 'axios';
+import axios from "axios";
 import ProductContext from "../components/ProductContext";
 import ProductCartContext from "../components/ProductContext";
 
-
 //const getDetailsAboutTheGame = httpsCallable(functions, 'getDetailsAboutTheGame');
 
-const GameScreen = ({navigation, route}) => {
+const GameScreen = ({ navigation, route }) => {
+  const { id } = route.params;
+  console.log(id);
 
-  const {id} = route.params
-  console.log(id)
-
-  const { product, setProduct } = useContext(ProductCartContext)
+  const { product, setProduct } = useContext(ProductCartContext);
 
   const { theme } = useContext(ThemeContext);
 
@@ -28,15 +34,18 @@ const GameScreen = ({navigation, route}) => {
 
   useEffect(() => {
     const getGames = async () => {
-      const response = await axios.get('https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getDetailsAboutTheGame?id='+id)
+      const response = await axios.get(
+        "https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getDetailsAboutTheGame?id=" +
+          id
+      );
 
-      let genreArray =  response.data.results.genres
+      let genreArray = response.data.results.genres;
       for (let i = 0; i < genreArray.length; i++) {
-        genreArray[i] = genreArray[i].name+", ";
+        genreArray[i] = genreArray[i].name + ", ";
       }
-      let platformsArray =  response.data.results.platforms
+      let platformsArray = response.data.results.platforms;
       for (let i = 0; i < platformsArray.length; i++) {
-        platformsArray[i] = platformsArray[i].platform.name+", ";
+        platformsArray[i] = platformsArray[i].platform.name + ", ";
       }
       setGame({
         name: response.data.results.name,
@@ -49,29 +58,56 @@ const GameScreen = ({navigation, route}) => {
         genres: genreArray,
         platforms: platformsArray,
       });
-    }
+    };
     getGames();
   }, []);
 
   const handleAddGameToCart = () => {
-    console.log(product.length);
-    setProduct([...product, game]);
-  }
+    if (product.find((item) => item.id === id) === undefined) {
+      setProduct([...product, { id: id, name: game.name, image: game.image }]);
+    }
+  };
 
-  
   return (
-    <View style={{flex: 1}}>
-      <Text style={theme === "light" ? styles.textMainLightHeader : styles.textMainDarkHeader}>{game.name}</Text>
+    <View style={{ flex: 1 }}>
+      <Text
+        style={
+          theme === "light"
+            ? styles.textMainLightHeader
+            : styles.textMainDarkHeader
+        }
+      >
+        {game.name}
+      </Text>
       <ScrollView>
-        <Image source={{uri: game.image}} style = {styles.img}/>
-        
+        <Image source={{ uri: game.image }} style={styles.img} />
+
         <TouchableOpacity onPress={toggleDescription}>
-          <View style={theme === "light" ? styles.descriptionContainerLight : styles.descriptionContainerDark}>
-            <Text style={theme === "light" ? styles.descriptionLight : styles.descriptionDark} numberOfLines={showFullDescription ? undefined : 2}>
+          <View
+            style={
+              theme === "light"
+                ? styles.descriptionContainerLight
+                : styles.descriptionContainerDark
+            }
+          >
+            <Text
+              style={
+                theme === "light"
+                  ? styles.descriptionLight
+                  : styles.descriptionDark
+              }
+              numberOfLines={showFullDescription ? undefined : 2}
+            >
               Description
             </Text>
             {showFullDescription && (
-              <Text style={theme === "light" ? styles.descriptionMoreLight : styles.descriptionMoreDark}>
+              <Text
+                style={
+                  theme === "light"
+                    ? styles.descriptionMoreLight
+                    : styles.descriptionMoreDark
+                }
+              >
                 {game.description}
               </Text>
             )}
@@ -79,129 +115,201 @@ const GameScreen = ({navigation, route}) => {
         </TouchableOpacity>
         <View style={styles.infoContainer}>
           <View style={styles.info}>
-            <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>Rating:</Text>
-            <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>{game.rating}</Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoLabelLight : styles.infoLabelDark
+              }
+            >
+              Rating:
+            </Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoValueLight : styles.infoValueDark
+              }
+            >
+              {game.rating}
+            </Text>
           </View>
           <View style={styles.info}>
-            <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>Developer:</Text>
-            <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>{game.developer}</Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoLabelLight : styles.infoLabelDark
+              }
+            >
+              Developer:
+            </Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoValueLight : styles.infoValueDark
+              }
+            >
+              {game.developer}
+            </Text>
           </View>
           <View style={styles.info}>
-            <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>Publisher:</Text>
-            <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>{game.publisher}</Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoLabelLight : styles.infoLabelDark
+              }
+            >
+              Publisher:
+            </Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoValueLight : styles.infoValueDark
+              }
+            >
+              {game.publisher}
+            </Text>
           </View>
           <View style={styles.info}>
-            <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>Release Date:</Text>
-            <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>{game.releaseDate}</Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoLabelLight : styles.infoLabelDark
+              }
+            >
+              Release Date:
+            </Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoValueLight : styles.infoValueDark
+              }
+            >
+              {game.releaseDate}
+            </Text>
           </View>
           <View style={styles.info}>
-            <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>Platforms:</Text>
-            <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>{game.platforms}</Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoLabelLight : styles.infoLabelDark
+              }
+            >
+              Platforms:
+            </Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoValueLight : styles.infoValueDark
+              }
+            >
+              {game.platforms}
+            </Text>
           </View>
           <View style={styles.info}>
-            <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>Genres:</Text>
-            <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>{game.genres}</Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoLabelLight : styles.infoLabelDark
+              }
+            >
+              Genres:
+            </Text>
+            <Text
+              style={
+                theme === "light" ? styles.infoValueLight : styles.infoValueDark
+              }
+            >
+              {game.genres}
+            </Text>
           </View>
 
-          <Button title="Add to shopping cart" onPress={handleAddGameToCart}></Button>
+          <Button
+            title="Add to shopping cart"
+            onPress={handleAddGameToCart}
+          ></Button>
         </View>
-
-        
-        
       </ScrollView>
     </View>
-  )
-}
+  );
+};
 
-export default GameScreen
+export default GameScreen;
 
 const styles = StyleSheet.create({
-    img: {
-      width: "100%",
-      height: 200,
-      resizeMode: "cover",
-    },
-    infoContainer: {
-      marginVertical: 10,
-      alignSelf: 'stretch',
-      margin: 20
-    },
-    info: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: 8,
-    },
-    infoLabelLight: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: "black",
-    },
-    infoLabelDark: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: "lightgrey",
-    },
-    infoValueLight: {
-      fontSize: 16,
-      marginLeft: 8,
-      padding: 5,
-      color: "black",
-    },
-    infoValueDark: {
-      fontSize: 16,
-      marginLeft: 8,
-      padding: 5,
-      color: "lightgrey",
-    },
+  img: {
+    width: "100%",
+    height: 200,
+    resizeMode: "cover",
+  },
+  infoContainer: {
+    marginVertical: 10,
+    alignSelf: "stretch",
+    margin: 20,
+  },
+  info: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  infoLabelLight: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "black",
+  },
+  infoLabelDark: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "lightgrey",
+  },
+  infoValueLight: {
+    fontSize: 16,
+    marginLeft: 8,
+    padding: 5,
+    color: "black",
+  },
+  infoValueDark: {
+    fontSize: 16,
+    marginLeft: 8,
+    padding: 5,
+    color: "lightgrey",
+  },
 
-    descriptionContainerLight: {
-      borderRadius: 5,
-      padding: 10,
-      borderBottomColor: 'black',
-      borderBottomWidth: 1,
-      marginBottom: 20,
-    },
-    descriptionContainerDark: {
-      borderRadius: 5,
-      padding: 10,
-      borderBottomColor: 'lightgrey',
-      borderBottomWidth: 1,
-      marginBottom: 20,
-    },
-    descriptionLight: {
-      fontSize: 20,
-      color: "black",
-    },
-    descriptionDark: {
-      fontSize: 20,
-      color: "lightgrey",
-    },
-    descriptionMoreLight: {
-      fontSize: 16,
-      marginTop: 10,
-      color: "black",
-    },
-    descriptionMoreDark: {
-      fontSize: 16,
-      marginTop: 10,
-      color: "lightgrey",
-    },
+  descriptionContainerLight: {
+    borderRadius: 5,
+    padding: 10,
+    borderBottomColor: "black",
+    borderBottomWidth: 1,
+    marginBottom: 20,
+  },
+  descriptionContainerDark: {
+    borderRadius: 5,
+    padding: 10,
+    borderBottomColor: "lightgrey",
+    borderBottomWidth: 1,
+    marginBottom: 20,
+  },
+  descriptionLight: {
+    fontSize: 20,
+    color: "black",
+  },
+  descriptionDark: {
+    fontSize: 20,
+    color: "lightgrey",
+  },
+  descriptionMoreLight: {
+    fontSize: 16,
+    marginTop: 10,
+    color: "black",
+  },
+  descriptionMoreDark: {
+    fontSize: 16,
+    marginTop: 10,
+    color: "lightgrey",
+  },
 
-    textMainLightHeader: {
-      fontSize: 24,
-      fontWeight: "bold",
-      marginTop: 30,
-      marginBottom: 5,
-      color: "black",
-      alignSelf: "center",
-    },
-    textMainDarkHeader: {
-      fontSize: 24,
-      fontWeight: "bold",
-      marginTop: 30,
-      marginBottom: 5,
-      color: "lightgrey",
-      alignSelf: "center",
-    },
-})
+  textMainLightHeader: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginTop: 30,
+    marginBottom: 5,
+    color: "black",
+    alignSelf: "center",
+  },
+  textMainDarkHeader: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginTop: 30,
+    marginBottom: 5,
+    color: "lightgrey",
+    alignSelf: "center",
+  },
+});
