@@ -22,22 +22,26 @@ const RenderCart = ({ item }) => {
       <View style={styles.productView}>
         <Image style={styles.imageStyle} source={{ uri: item.image }} />
 
+        <Text style={{
+            fontSize: 14,
+            fontWeight: '400',
+            maxWidth: '100%',
+            marginRight: 4,
+            letterSpacing: 1,
+            
+            
+          }}>
+
+            {item.name}
+          </Text>
+
       </View>
 
       <View style={styles.productInfo}>
 
         <View style={{}}>
 
-          <Text style={{
-            fontSize: 14,
-            fontWeight: '400',
-            maxWidth: '100%',
-            marginRight: 4,
-            letterSpacing: 1
-          }}>
-
-            {item.name}
-          </Text>
+          
 
 
           <View style={styles.spesificInfo}>
@@ -101,6 +105,7 @@ const ShoppingCartScreen = () => {
       
       <View style={styles.bodyContainer}>
       <ScrollView>
+      
         
 
 
@@ -108,9 +113,11 @@ const ShoppingCartScreen = () => {
             My Cart
           </Text>
 
-          <View style={{ paddingHorizontal: 16, flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+          <View style={{ paddingHorizontal: 16}}>
 
-            {/* {product ? product.map(RenderCart) : null} */}
+          {/* flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%"  */}
+
+
 
             {product.map((item, index) => {
               return (
@@ -134,9 +141,10 @@ const ShoppingCartScreen = () => {
 
           </View>
 
+          
           </ScrollView>
-
       </View>
+      
 
     
 
@@ -190,25 +198,32 @@ const styles = StyleSheet.create({
     height: "100%",
     borderTopStartRadius: 50,
     borderTopEndRadius: 50,
-    position: "relative"
+    position: "relative",
+    // alignItems: "center",
+    // justifyContent: "space-between",
+    //flexDirection: "row",
+    
+
   },
 
   productView: {
     width: '30%',
     height: 125,
     padding: 14,
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#D3D3D3",
     borderRadius: 10,
     marginRight: 22,
-    flexDirection: "row",
+    flexDirection: "row"
   },
 
   imageStyle: {
     width: '100%',
     height: '100%',
     resizeMode: 'contain',
+    
+    
 
   },
 
