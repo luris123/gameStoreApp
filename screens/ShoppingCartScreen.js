@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
     height: "100%",
     borderTopStartRadius: 50,
     borderTopEndRadius: 50,
+    position: "relative"
   },
 
   productView: {
