@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ThemeContext from "../components/ThemeContext";
@@ -31,34 +32,38 @@ const GameScreen = ({ navigation, route }) => {
   };
 
   const [game, setGame] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  const getGames = async () => {
+    setIsLoading(true);
+    const response = await axios.get(
+      "https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getDetailsAboutTheGame?id=" +
+        id
+    );
+
+    let genreArray = response.data.results.genres;
+    for (let i = 0; i < genreArray.length; i++) {
+      genreArray[i] = genreArray[i].name + ", ";
+    }
+    let platformsArray = response.data.results.platforms;
+    for (let i = 0; i < platformsArray.length; i++) {
+      platformsArray[i] = platformsArray[i].platform.name + ", ";
+    }
+    setGame({
+      name: response.data.results.name,
+      image: response.data.results.background_image,
+      description: response.data.results.description_raw,
+      developer: response.data.results.developers[0].name,
+      publisher: response.data.results.publishers[0].name,
+      releaseDate: response.data.results.released,
+      rating: response.data.results.rating,
+      genres: genreArray,
+      platforms: platformsArray,
+    });
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    const getGames = async () => {
-      const response = await axios.get(
-        "https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getDetailsAboutTheGame?id=" +
-          id
-      );
-
-      let genreArray = response.data.results.genres;
-      for (let i = 0; i < genreArray.length; i++) {
-        genreArray[i] = genreArray[i].name + ", ";
-      }
-      let platformsArray = response.data.results.platforms;
-      for (let i = 0; i < platformsArray.length; i++) {
-        platformsArray[i] = platformsArray[i].platform.name + ", ";
-      }
-      setGame({
-        name: response.data.results.name,
-        image: response.data.results.background_image,
-        description: response.data.results.description_raw,
-        developer: response.data.results.developers[0].name,
-        publisher: response.data.results.publishers[0].name,
-        releaseDate: response.data.results.released,
-        rating: response.data.results.rating,
-        genres: genreArray,
-        platforms: platformsArray,
-      });
-    };
     getGames();
   }, []);
 
@@ -68,6 +73,13 @@ const GameScreen = ({ navigation, route }) => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
   return (
     <View style={{ flex: 1 }}>
       <Text

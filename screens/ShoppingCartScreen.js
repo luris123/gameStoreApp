@@ -16,13 +16,9 @@ import GameScreen from "./GameScreen";
 
 import ProductCartContext from "../components/ProductContext";
 
-const RenderCart = ({ item }) => {
-  //console.log(item.background_image)
-
-  //const { product } = useContext(ProductContext)
-
+const RenderCart = ({ item, removeItem }) => {
   return (
-    <TouchableOpacity styles={styles.touchableOp}>
+    <View styles={styles.touchableOp}>
       <View style={styles.productView}>
         <Image style={styles.imageStyle} source={{ uri: item.image }} />
         <Text
@@ -35,14 +31,13 @@ const RenderCart = ({ item }) => {
             letterSpacing: 1,
           }}
         >
-          {item.name}
+          {item.name + "\n" + "hinta"}
         </Text>
+        <View style={styles.spesificInfo}>
+          <Button title="remove" onPress={() => removeItem(item.id)}></Button>
+        </View>
       </View>
-      <View style={styles.spesificInfo}>
-        <Text>Price and delete</Text>
-      </View>
-      
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -50,6 +45,11 @@ const ShoppingCartScreen = () => {
   const { product, setProduct } = useContext(ProductCartContext);
 
   const { theme } = useContext(ThemeContext);
+
+  const removeItem = (id) => {
+    const newProduct = product.filter((item) => item.id !== id);
+    setProduct(newProduct);
+  };
 
   return (
     <View style={styles.mainCont}>
@@ -80,33 +80,17 @@ const ShoppingCartScreen = () => {
       </View>
 
       <View style={styles.bodyContainer}>
-        {/* <ScrollView>
-          <Text style={styles.myCartFont}>My Cart</Text>
-
-          <View
-            style={{
-              paddingHorizontal: 16,
-            }}
-          >
-            {product.map((item, index) => {
-              return <RenderCart key={index} item={item} />;
-            })}
-          </View>
-        </ScrollView> */}
-         <FlatList
-            showsVerticalScrollIndicator={false}
-            data={product}
-            renderItem={({ item }) => (
-              <RenderCart item={item} />
-
-            )}
-            keyExtractor={(item) => item.id}
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={product}
+          renderItem={({ item }) => (
+            <RenderCart item={item} removeItem={removeItem} />
+          )}
+          keyExtractor={(item) => item.id}
           //numColumns={2}
-          >
-            {" "}
-          </FlatList> 
-
-        
+        >
+          {" "}
+        </FlatList>
       </View>
     </View>
   );
@@ -148,7 +132,7 @@ const styles = StyleSheet.create({
     height: "100%",
     borderTopStartRadius: 50,
     borderTopEndRadius: 50,
-    position: "relative"
+    position: "relative",
   },
 
   productView: {
