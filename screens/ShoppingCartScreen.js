@@ -12,7 +12,6 @@ import {
 import ThemeContext from "../components/ThemeContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Feather from "@expo/vector-icons/Feather";
-import GameScreen from "./GameScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ProductCartContext from "../components/ProductContext";
 
@@ -35,22 +34,21 @@ const RenderCart = ({ item, removeItem }) => {
         >
           {item.name + "\n \n" + "59.99€"}
         </Text>
-
-        <TouchableOpacity onPress={() => removeItem(item.id)}>
-          <MaterialCommunityIcons
-            name="delete-outline"
-            style={{
-              fontSize: 18,
-              color: "#0a0a0a",
-              backgroundColor: "#ada899",
-              padding: 8,
-              borderRadius: 100,
-            }}
-          />
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity onPress={() => removeItem(item.id)}>
+            <MaterialCommunityIcons
+              name="delete-outline"
+              style={{
+                fontSize: 18,
+                color: "#0a0a0a",
+                backgroundColor: "#ada899",
+                padding: 8,
+                borderRadius: 100,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <View style={styles.spesificInfo}></View>
     </View>
   );
 };
@@ -92,22 +90,66 @@ const ShoppingCartScreen = () => {
         </View>
 
         <View style={styles.bodyContainer}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={product}
-            renderItem={({ item }) => (
-              <RenderCart item={item} removeItem={removeItem} />
-            )}
-            keyExtractor={(item) => item.id}
-            //numColumns={2}
+          <Text style={styles.myCartFont}>My Cart</Text>
+
+          <Text
+            style={{
+              fontSize: 18,
+              color: "#000000",
+              fontWeight: "500",
+              padding: 15,
+            }}
           >
-            {" "}
-          </FlatList>
+            Shopping cart is empty
+          </Text>
         </View>
       </View>
     );
   }
+
+  return (
+    <View style={styles.mainCont}>
+      <View
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          paddingTop: 60,
+          paddingHorizontal: 25,
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 18,
+            color: "#f2f2f2",
+            fontWeight: "500",
+          }}
+        >
+          Order Details
+        </Text>
+
+        <View></View>
+      </View>
+
+      <View style={styles.bodyContainer}>
+        <Text style={styles.myCartFont}>My Cart</Text>
+
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={product}
+          renderItem={({ item }) => (
+            <RenderCart item={item} removeItem={removeItem} />
+          )}
+          keyExtractor={(item) => item.id}
+        >
+          {" "}
+        </FlatList>
+      </View>
+    </View>
+  );
 };
+
 export default ShoppingCartScreen;
 
 const styles = StyleSheet.create({

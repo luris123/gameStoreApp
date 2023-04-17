@@ -45,7 +45,7 @@ const GamesByGenreScreen = ({ route }) => {
 
     const renderFooter = () => {
         return loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size="large" color="#0000ff" />
         ) : null;
     };
 
