@@ -140,32 +140,26 @@ const SearchScreen = () => {
             data={matchedGames}
             renderItem={({ item }) => (
               <ProductCard game={item.name} bg={item.background_image} id={item.id} />
+
             )}
+            ListFooterComponent={
+              <View style={{width: 250, paddingStart: 120, paddingBottom: 10}}>
+                <Button
+                  title="Load More"
+                  onPress={() => {
+                    getGames();
+                    changePageNumber();
+                  }} />
+              </View>
+            }
+
             keyExtractor={(item) => item.id}
             numColumns={2}
           >
             {" "}
           </FlatList>
 
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "space-around",
-            }}
-          ></View>
 
-          <View style={{ width: 250, paddingStart: 120, }}>
-            <Button
-
-              title="Load More"
-              onPress={() => {
-                getGames();
-                changePageNumber();
-              }}
-
-            />
-          </View>
         </View>
 
       </View>

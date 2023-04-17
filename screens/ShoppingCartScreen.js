@@ -13,36 +13,57 @@ import ThemeContext from "../components/ThemeContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Feather from "@expo/vector-icons/Feather";
 import GameScreen from "./GameScreen";
-
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProductCartContext from "../components/ProductContext";
 
-const RenderCart = ({ item }) => {
+
+
+const RenderCart = ({ item, handleDelete }) => {
   //console.log(item.background_image)
 
   //const { product } = useContext(ProductContext)
 
   return (
-    <TouchableOpacity styles={styles.touchableOp}>
+
+    <View styles={styles.touchableOp}>
       <View style={styles.productView}>
         <Image style={styles.imageStyle} source={{ uri: item.image }} />
         <Text
           style={{
             marginLeft: 10,
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: "400",
-            maxWidth: "100%",
+            maxWidth: "80%",
+            minWidth: "80%",
+            
             marginRight: 4,
             letterSpacing: 1,
           }}
         >
-          {item.name}
+          {item.name + "\n \n"  + "59.99€" }
         </Text>
+
+        <TouchableOpacity onPress={() => removeItem(item.id)}> 
+          <MaterialCommunityIcons
+                name="delete-outline"
+                style={{
+                  fontSize: 18,
+                  color: "#0a0a0a",
+                  backgroundColor: "#ada899",
+                  padding: 8,
+                  borderRadius: 100,
+                }}
+              />
+        
+        </TouchableOpacity>
+        
       </View>
+
       <View style={styles.spesificInfo}>
-        <Text>Price and delete</Text>
+       
+        
       </View>
-      
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -51,8 +72,14 @@ const ShoppingCartScreen = () => {
 
   const { theme } = useContext(ThemeContext);
 
-  return (
-    <View style={styles.mainCont}>
+  const removeItem = (id) => {
+    const newProduct = product.filter((item) => item.id !== id);
+    setProduct(newProduct);
+  };
+
+  if (product.length === 0){
+      return (
+        <View style={styles.mainCont}>
       <View
         style={{
           width: "100%",
@@ -63,9 +90,7 @@ const ShoppingCartScreen = () => {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Feather name="chevron-left" color="#fff" size={25} />
-        </TouchableOpacity>
+        
         <Text
           style={{
             fontSize: 18,
@@ -80,6 +105,49 @@ const ShoppingCartScreen = () => {
       </View>
 
       <View style={styles.bodyContainer}>
+        <Text style={styles.myCartFont}>My Cart</Text>
+
+          <Text style={{
+            fontSize: 18,
+            color: "#000000",
+            fontWeight: "500",
+            padding: 15}}>
+              Shopping cart is empty
+            </Text>
+        
+      </View>
+    </View>
+      )
+  }
+
+  return (
+    <View style={styles.mainCont}>
+      <View
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          paddingTop: 60,
+          paddingHorizontal: 25,
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        
+        <Text
+          style={{
+            fontSize: 18,
+            color: "#f2f2f2",
+            fontWeight: "500",
+          }}
+        >
+          Order Details
+        </Text>
+
+        <View></View>
+      </View>
+
+      <View style={styles.bodyContainer}>
+        <Text style={styles.myCartFont}>My Cart</Text>
         {/* <ScrollView>
           <Text style={styles.myCartFont}>My Cart</Text>
 
@@ -97,7 +165,7 @@ const ShoppingCartScreen = () => {
             showsVerticalScrollIndicator={false}
             data={product}
             renderItem={({ item }) => (
-              <RenderCart item={item} />
+              <RenderCart item={item} removeItem={removeItem} />
 
             )}
             keyExtractor={(item) => item.id}
@@ -115,6 +183,8 @@ const ShoppingCartScreen = () => {
 export default ShoppingCartScreen;
 
 const styles = StyleSheet.create({
+
+
   touchableOp: {
     width: "100%",
     height: 100,
@@ -131,13 +201,13 @@ const styles = StyleSheet.create({
   },
 
   myCartFont: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: "bold",
     color: "#000000",
     letterSpacing: 1,
-    paddingTop: 20,
-    paddingLeft: 16,
-    paddingBottom: 10,
+    //paddingTop: 5,
+    paddingLeft: 15,
+    paddingBottom: 5,
   },
 
   bodyContainer: {
@@ -149,6 +219,7 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 50,
     borderTopEndRadius: 50,
     position: "relative",
+    paddingTop: 25,
     // alignItems: "center",
     // justifyContent: "space-between",
     //flexDirection: "row",
@@ -159,7 +230,7 @@ const styles = StyleSheet.create({
   productView: {
     width: "50%",
     height: 125,
-    padding: 10,
+    padding: 5,
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 10,
@@ -182,8 +253,10 @@ const styles = StyleSheet.create({
 
   spesificInfo: {
     marginTop: 4,
-    flexDirection: "column",
-    alignItems: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    borderRadius: 10,
     opacity: 0.6,
   },
 });
