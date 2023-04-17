@@ -13,7 +13,7 @@ import ThemeContext from "../components/ThemeContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Feather from "@expo/vector-icons/Feather";
 import GameScreen from "./GameScreen";
-
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProductCartContext from "../components/ProductContext";
 
 const RenderCart = ({ item, removeItem }) => {
@@ -24,18 +24,37 @@ const RenderCart = ({ item, removeItem }) => {
         <Text
           style={{
             marginLeft: 10,
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: "400",
-            maxWidth: "100%",
+            maxWidth: "80%",
+            minWidth: "80%",
+            
             marginRight: 4,
             letterSpacing: 1,
           }}
         >
-          {item.name + "\n" + "hinta"}
+          {item.name + "\n \n"  + "59.99€" }
         </Text>
-        <View style={styles.spesificInfo}>
-          <Button title="remove" onPress={() => removeItem(item.id)}></Button>
-        </View>
+
+        <TouchableOpacity onPress={() => removeItem(item.id)}> 
+          <MaterialCommunityIcons
+                name="delete-outline"
+                style={{
+                  fontSize: 18,
+                  color: "#0a0a0a",
+                  backgroundColor: "#ada899",
+                  padding: 8,
+                  borderRadius: 100,
+                }}
+              />
+        
+        </TouchableOpacity>
+        
+      </View>
+
+      <View style={styles.spesificInfo}>
+       
+        
       </View>
     </View>
   );
@@ -51,8 +70,9 @@ const ShoppingCartScreen = () => {
     setProduct(newProduct);
   };
 
-  return (
-    <View style={styles.mainCont}>
+  if (product.length === 0){
+      return (
+        <View style={styles.mainCont}>
       <View
         style={{
           width: "100%",
@@ -63,9 +83,7 @@ const ShoppingCartScreen = () => {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Feather name="chevron-left" color="#fff" size={25} />
-        </TouchableOpacity>
+        
         <Text
           style={{
             fontSize: 18,
@@ -99,6 +117,8 @@ const ShoppingCartScreen = () => {
 export default ShoppingCartScreen;
 
 const styles = StyleSheet.create({
+
+
   touchableOp: {
     width: "100%",
     height: 100,
@@ -115,13 +135,13 @@ const styles = StyleSheet.create({
   },
 
   myCartFont: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: "bold",
     color: "#000000",
     letterSpacing: 1,
-    paddingTop: 20,
-    paddingLeft: 16,
-    paddingBottom: 10,
+    //paddingTop: 5,
+    paddingLeft: 15,
+    paddingBottom: 5,
   },
 
   bodyContainer: {
@@ -133,12 +153,18 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 50,
     borderTopEndRadius: 50,
     position: "relative",
+    paddingTop: 25,
+    // alignItems: "center",
+    // justifyContent: "space-between",
+    //flexDirection: "row",
+    
+
   },
 
   productView: {
     width: "50%",
     height: 125,
-    padding: 10,
+    padding: 5,
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 10,
@@ -161,8 +187,10 @@ const styles = StyleSheet.create({
 
   spesificInfo: {
     marginTop: 4,
-    flexDirection: "column",
-    alignItems: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    borderRadius: 10,
     opacity: 0.6,
   },
 });
