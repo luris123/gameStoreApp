@@ -13,7 +13,7 @@ import ThemeContext from "../components/ThemeContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Feather from "@expo/vector-icons/Feather";
 import GameScreen from "./GameScreen";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ProductCartContext from "../components/ProductContext";
 
 const RenderCart = ({ item, removeItem }) => {
@@ -28,34 +28,29 @@ const RenderCart = ({ item, removeItem }) => {
             fontWeight: "400",
             maxWidth: "80%",
             minWidth: "80%",
-            
+
             marginRight: 4,
             letterSpacing: 1,
           }}
         >
-          {item.name + "\n \n"  + "59.99€" }
+          {item.name + "\n \n" + "59.99€"}
         </Text>
 
-        <TouchableOpacity onPress={() => removeItem(item.id)}> 
+        <TouchableOpacity onPress={() => removeItem(item.id)}>
           <MaterialCommunityIcons
-                name="delete-outline"
-                style={{
-                  fontSize: 18,
-                  color: "#0a0a0a",
-                  backgroundColor: "#ada899",
-                  padding: 8,
-                  borderRadius: 100,
-                }}
-              />
-        
+            name="delete-outline"
+            style={{
+              fontSize: 18,
+              color: "#0a0a0a",
+              backgroundColor: "#ada899",
+              padding: 8,
+              borderRadius: 100,
+            }}
+          />
         </TouchableOpacity>
-        
       </View>
 
-      <View style={styles.spesificInfo}>
-       
-        
-      </View>
+      <View style={styles.spesificInfo}></View>
     </View>
   );
 };
@@ -70,55 +65,52 @@ const ShoppingCartScreen = () => {
     setProduct(newProduct);
   };
 
-  if (product.length === 0){
-      return (
-        <View style={styles.mainCont}>
-      <View
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          paddingTop: 60,
-          paddingHorizontal: 25,
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        
-        <Text
+  if (product.length === 0) {
+    return (
+      <View style={styles.mainCont}>
+        <View
           style={{
-            fontSize: 18,
-            color: "#f2f2f2",
-            fontWeight: "500",
+            width: "100%",
+            flexDirection: "row",
+            paddingTop: 60,
+            paddingHorizontal: 25,
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          Order Details
-        </Text>
+          <Text
+            style={{
+              fontSize: 18,
+              color: "#f2f2f2",
+              fontWeight: "500",
+            }}
+          >
+            Order Details
+          </Text>
 
-        <View></View>
-      </View>
+          <View></View>
+        </View>
 
-      <View style={styles.bodyContainer}>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={product}
-          renderItem={({ item }) => (
-            <RenderCart item={item} removeItem={removeItem} />
-          )}
-          keyExtractor={(item) => item.id}
-          //numColumns={2}
-        >
-          {" "}
-        </FlatList>
+        <View style={styles.bodyContainer}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={product}
+            renderItem={({ item }) => (
+              <RenderCart item={item} removeItem={removeItem} />
+            )}
+            keyExtractor={(item) => item.id}
+            //numColumns={2}
+          >
+            {" "}
+          </FlatList>
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
 };
-
 export default ShoppingCartScreen;
 
 const styles = StyleSheet.create({
-
-
   touchableOp: {
     width: "100%",
     height: 100,
@@ -157,8 +149,6 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     // justifyContent: "space-between",
     //flexDirection: "row",
-    
-
   },
 
   productView: {
