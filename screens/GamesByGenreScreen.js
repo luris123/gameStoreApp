@@ -15,6 +15,11 @@ const GamesByGenreScreen = ({ route }) => {
         genreToLowerCase = genreToLowerCase.replace(" ", "-")
     }
 
+    //if genre rpg, replace with role-playing-games
+    if(genreToLowerCase === "rpg"){
+        genreToLowerCase = "role-playing-games-rpg"
+    }
+
     const [pageNumber, setPageNumber] = useState(1);
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(false);  
