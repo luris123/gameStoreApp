@@ -1,16 +1,16 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
-  useState,
   Image,
   ScrollView,
   Button,
+  Modal,
+  TouchableOpacity,
 } from "react-native";
 import ThemeContext from "../components/ThemeContext";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ProductCartContext from "../components/ProductContext";
@@ -32,7 +32,7 @@ const RenderCart = ({ item, removeItem }) => {
             letterSpacing: 1,
           }}
         >
-          {item.name + "\n \n" + "59.99€"}
+          {item.name + "\n \n" + item.price + "€"}
         </Text>
         <View>
           <TouchableOpacity onPress={() => removeItem(item.id)}>
@@ -53,10 +53,58 @@ const RenderCart = ({ item, removeItem }) => {
   );
 };
 
-const ShoppingCartScreen = () => {
+const BuyModal = ({ showModal, setShowModal }) => {
+  const { theme } = useContext(ThemeContext);
   const { product, setProduct } = useContext(ProductCartContext);
 
+  const totalPrice = product.reduce((acc, item) => {
+    return acc + item.price;
+  }, 0);
+
+  return (
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={showModal}
+        onRequestClose={() => {
+          setShowModal(!showModal);
+        }}
+      >
+        <View style={theme === "light" ? styles.modalLight : styles.modalDark}>
+          <Text
+            style={{
+              fontSize: 18,
+              color: "#000000",
+              fontWeight: "500",
+              padding: 15,
+            }}
+          >
+            Thank you for your purchase!
+          </Text>
+          <Text>
+            You have bought {product.length} items for a total of {totalPrice}€
+          </Text>
+          <Text>Verification email has been sent to your address.</Text>
+          <TouchableOpacity
+            style={styles.buyButton}
+            onPress={() => {
+              setShowModal(!showModal);
+              setProduct([]);
+            }}
+          >
+            <Text style={styles.buyText}>OK</Text>
+          </TouchableOpacity>
+
+
+        </View>
+      </Modal>
+  );
+};
+
+const ShoppingCartScreen = () => {
+  const { product, setProduct } = useContext(ProductCartContext);
   const { theme } = useContext(ThemeContext);
+  const [showModal, setShowModal] = useState(false);
 
   const removeItem = (id) => {
     const newProduct = product.filter((item) => item.id !== id);
@@ -86,7 +134,6 @@ const ShoppingCartScreen = () => {
             Order Details
           </Text>
 
-          <View></View>
         </View>
 
         <View style={styles.bodyContainer}>
@@ -145,6 +192,15 @@ const ShoppingCartScreen = () => {
         >
           {" "}
         </FlatList>
+        <BuyModal showModal={showModal} setShowModal={setShowModal} />
+        <View style={{ alignItems: "center" }}>
+          <TouchableOpacity
+            style={styles.buyButton}
+            onPress={() => setShowModal(true)}
+          >
+            <Text style={styles.buttonText}>Buy Now</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -173,14 +229,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#000000",
     letterSpacing: 1,
-    //paddingTop: 5,
     paddingLeft: 15,
     paddingBottom: 5,
   },
 
   bodyContainer: {
     flex: 1,
-    //paddingLeft: 10,
     backgroundColor: "#f2f2f2",
     width: "100%",
     height: "100%",
@@ -188,9 +242,6 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 50,
     position: "relative",
     paddingTop: 25,
-    // alignItems: "center",
-    // justifyContent: "space-between",
-    //flexDirection: "row",
   },
 
   productView: {
@@ -224,5 +275,31 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     borderRadius: 10,
     opacity: 0.6,
+  },
+  buyButton: {
+    backgroundColor: "#2c6bed",
+    width: "100%",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 10,
+    width: "80%",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  modalLight: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+  },
+  modalDark: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#121212",
   },
 });

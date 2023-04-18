@@ -50,7 +50,9 @@ const PasswordModal = ({ showModal, setShowModal }) => {
   };
 
   return (
+    
     <Modal
+    
       animationType="slide"
       transparent={false}
       visible={showModal}
