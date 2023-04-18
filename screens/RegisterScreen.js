@@ -12,7 +12,7 @@ import React, { useState } from "react";
 
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set, update } from "firebase/database";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -27,9 +27,9 @@ const RegisterScreen = () => {
       .then((userCredentials) => {
         const user = userCredentials.user;
         const db = getDatabase();
-        set(ref(db, "users/" + user.uid), {
+        update(ref(db, "users/" + user.uid), {
           email: email,
-          password: password,
+          //password: password,
           darkMode: false,
           uid: user.uid,
         });
