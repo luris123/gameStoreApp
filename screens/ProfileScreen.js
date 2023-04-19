@@ -6,13 +6,13 @@ import {
   View,
   Modal,
 } from "react-native";
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { auth } from "../firebase";
 import ThemeContext from "../components/ThemeContext";
 import SwitchWithText from "../components/SwitchWithText";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getDatabase, ref, update } from "firebase/database";
+import { get, getDatabase, ref, update } from "firebase/database";
 import {
   updatePassword,
   reauthenticateWithCredential,
@@ -123,11 +123,14 @@ const ProfileScreen = ({ navigation }) => {
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
+    AsyncStorage.setItem("@darkMode", theme === "light" ? "true" : "false");
     const db = getDatabase();
     update(ref(db, "users/" + user.uid), {
       darkMode: theme === "light" ? true : false,
     });
   };
+
+
 
   const handleSignOut = async () => {
     await AsyncStorage.removeItem("@email");

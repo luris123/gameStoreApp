@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { auth } from "./firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { get, getDatabase, ref, update } from "firebase/database";
 import React, { useEffect, useLayoutEffect, useState, useContext } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -33,7 +34,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [theme, setTheme] = useState("light");
 
-
+  const currentUser = auth.currentUser;
 
   const lightTheme = {
     colors: {
@@ -90,8 +91,19 @@ export default function App() {
     }
   });
 
-  
-
+  useEffect(() => {
+    if(currentUser === null) return;
+    get(ref(getDatabase(), "users/" + currentUser.uid)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        if (data.darkMode) {
+          setTheme("dark");
+        } else {
+          setTheme("light");
+        }
+      }
+    });
+  }, [currentUser]);
 
   if (user === false) {
     return (
