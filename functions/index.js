@@ -237,7 +237,6 @@ exports.sendEmail = functions.region("europe-west1").https.onRequest((request, r
       }
 
       .game {
-        display: flex;
         align-items: center;
         margin-bottom: 30px;
         border-bottom: 1px solid #ccc;
