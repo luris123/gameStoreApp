@@ -17,6 +17,8 @@ import ProductCartContext from "../components/ProductContext";
 import { auth } from "../firebase";
 import { getDatabase, ref, update } from "firebase/database";
 
+import axios from 'axios'
+
 const RenderCart = ({ item, removeItem }) => {
   const { theme } = useContext(ThemeContext);
   return (
@@ -30,7 +32,7 @@ const RenderCart = ({ item, removeItem }) => {
             fontWeight: "400",
             maxWidth: "80%",
             minWidth: "80%",
-            color: theme === "light" ? "#000000" : "#f2f2f2", 
+            color: theme === "light" ? "#000000" : "#f2f2f2",
             marginRight: 4,
             letterSpacing: 1,
           }}
@@ -65,38 +67,38 @@ const BuyModal = ({ showModal, setShowModal }) => {
   }, 0);
 
   return (
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={showModal}
-        onRequestClose={() => {
-          setShowModal(!showModal);
-        }}
-      >
-        <View style={theme === "light" ? styles.modalLight : styles.modalDark}>
-          <Text
-            style={theme === "light" ? styles.buyTextLight : styles.buyTextDark}
-          >
-            Thank you for your purchase!
-          </Text>
-          <Text style={theme === "light" ? styles.textLight : styles.textDark}>
-            You have bought {product.length} items for a total of {totalPrice}€
-          </Text>
-          <Text style={theme === "light" ? styles.textLight : styles.textDark}>
+    <Modal
+      animationType="slide"
+      transparent={false}
+      visible={showModal}
+      onRequestClose={() => {
+        setShowModal(!showModal);
+      }}
+    >
+      <View style={theme === "light" ? styles.modalLight : styles.modalDark}>
+        <Text
+          style={theme === "light" ? styles.buyTextLight : styles.buyTextDark}
+        >
+          Thank you for your purchase!
+        </Text>
+        <Text style={theme === "light" ? styles.textLight : styles.textDark}>
+          You have bought {product.length} items for a total of {totalPrice}€
+        </Text>
+        <Text style={theme === "light" ? styles.textLight : styles.textDark}>
           Verification email has been sent to your address.</Text>
-          <TouchableOpacity
-            style={styles.buyButton}
-            onPress={() => {
-              setShowModal(!showModal);
-              setProduct([]);
-            }}
-          >
-            <Text style={styles.buttonText}>OK</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buyButton}
+          onPress={() => {
+            setShowModal(!showModal);
+            setProduct([]);
+          }}
+        >
+          <Text style={styles.buttonText}>OK</Text>
+        </TouchableOpacity>
 
 
-        </View>
-      </Modal>
+      </View>
+    </Modal>
   );
 };
 
@@ -112,20 +114,27 @@ const ShoppingCartScreen = () => {
     setProduct(newProduct);
   };
 
-  const handleBuy = () => {
+  const handleBuy = async () => {
     let orderID = Math.floor(Math.random() * 1000000000);
     const order = {
       orderID: orderID,
       products: product,
       userID: user.uid,
     };
-    const dbRef = ref(db, "orders/" + orderID);
-    update(dbRef, order);
-    console.log("Order sent to database")
-    console.log("ID: " + orderID)
-    console.log("User ID: " + user.uid)
-    console.log("Products: " + JSON.stringify(product))
-    //tähän vois vielä keksiä sen verifikaatio sähköpostin
+
+    try {
+      const dbRef = ref(db, "orders/" + orderID);
+      update(dbRef, order);
+      console.log("Order sent to email and database");
+
+      const response = await axios.post('https://europe-west1-gamestoreapp-69869.cloudfunctions.net/sendEmail', {
+        email: user.email,
+        orderID: orderID,
+        products: product
+      });
+    } catch (error) {
+      console.error(error);
+    }
 
     setShowModal(true);
   };
@@ -157,7 +166,7 @@ const ShoppingCartScreen = () => {
         </View>
 
         <View style = {theme === "light" ? styles.bodyContainerLight : styles.bodyContainerDark}>
-        <Text style = {theme === "light" ? styles.myCartFontLight : styles.myCartFontDark}>My Cart</Text>
+          <Text style = {theme === "light" ? styles.myCartFontLight : styles.myCartFontDark}>My Cart</Text>
 
           <Text
             style={{
