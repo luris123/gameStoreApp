@@ -6,8 +6,7 @@ import {
   Text,
   View,
   FlatList,
-  Button,
-  Pressable,
+  ActivityIndicator
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -17,9 +16,6 @@ import GameScreen from "./GameScreen";
 import ThemeContext from "../components/ThemeContext";
 import { useNavigation } from '@react-navigation/native';
 
-
-
-
 const ProductCard = ({ game, bg, id }) => {
   const { theme } = useContext(ThemeContext);
   const navigation = useNavigation()
@@ -27,33 +23,11 @@ const ProductCard = ({ game, bg, id }) => {
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate("Game", { id })}
-      style={{
-        width: "100%",
-        marginVertical: 14,
-        paddingRight: 30,
-        paddingLeft: 30,
-      }}
     >
-      <View style={theme === "light" ? styles.bodyContainerLight : styles.bodyContainerDark}>
-        <View style={theme === "light" ? styles.innerProductCardLight : styles.innerProductCardDark}></View>
-
-        <Image style={styles.img} source={{ uri: bg }} />
+      <View style={[styles.productItem]}>
+        <Image style={[styles.productImage]} source={{ uri: bg }} />
+        <Text style={[styles.productName]}>{game}</Text>
       </View>
-
-      <Text
-        style={{
-          fontSize: 13,
-          backgroundColor: theme === "light" ? "#D3D3D3" : "#333333",
-          borderRadius: 10,
-          fontWeight: "600",
-          marginBottom: 2,
-          width: 125,
-          textAlign: "center",
-          color: theme === "light" ? "black" : "lightgrey",
-        }}
-      >
-        {game}
-      </Text>
     </TouchableOpacity>
   );
 };
@@ -62,7 +36,8 @@ const SearchScreen = () => {
   const { theme } = useContext(ThemeContext);
   const [search, setSearch] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
-  const [game, setGame] = useState([]);
+  const [games, setGames] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation()
 
   useEffect(() => {
@@ -71,168 +46,94 @@ const SearchScreen = () => {
   }, []);
 
   const getGames = async () => {
-    const response = await axios.get(
-      `https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getGames?page=${pageNumber}`
-    );
-
-    setGame([...game, ...response.data.results]);
+    if(search.length == 0){
+      setLoading(true);
+      const response = await axios.get(
+        `https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getGames?page=${pageNumber}`
+      );
+      setGames(prevGames => [...prevGames, ...response.data.results])
+      setLoading(false);
+  
+      //if there is a next page, increment the page number
+      if (response.data.next == true) {
+        setPageNumber(pageNumber + 1)
+      }
+    }
   };
 
   const changePageNumber = () => {
     setPageNumber(pageNumber + 1);
   };
 
-  const matchedGames = game?.filter((games) =>
+  const matchedGames = games?.filter((games) =>
     games.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (game != undefined) {
+  const renderFooter = () => {
+    return loading ? (
+      <ActivityIndicator size="large" color="#0000ff" />
+    ) : null;
+  };
 
-    //props.navigation.goBack()
-
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Feather name="chevron-left" color="#FFF" size={25} />
-          </TouchableOpacity>
-          <Feather name="filter" color="#FFF" size={25} />
-        </View>
-
-        <View style={styles.headerContainer}>
-          <View style={styles.searchBarStyle}>
-            <Feather
-              name="search"
-              size={20}
-              color="black"
-              style={{ marginLeft: 1, marginRight: 4 }}
-            />
-
-            <TextInput
-              value={search}
-              onChangeText={(text) => setSearch(text)}
-              style={styles.search}
-              placeholder="Search"
-            />
-          </View>
-        </View>
-
-        <View style={theme === "light" ? styles.cont3Light : styles.cont3Dark}>
-          <Text style={theme === "light" ? styles.textHeaderLight : styles.textHeaderDark}>Products</Text>
-
-
-          {/* <View style={{width: 250, paddingStart: 120, justifyContent: "center", alignContent: "center", alignItems: "center"}}>
-        <Button
-            
-            title="Load More"
-            onPress={() => {
-              getGames();
-              changePageNumber();
-            }}
-            
+  return (
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <View style={styles.searchBarStyle}>
+          <Feather
+            name="search"
+            size={20}
+            color="black"
+            style={{ marginLeft: 1, marginRight: 4 }}
           />
-        </View> */}
-
-
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={matchedGames}
-            renderItem={({ item }) => (
-              <ProductCard game={item.name} bg={item.background_image} id={item.id} />
-
-            )}
-            ListFooterComponent={
-              <View style={{width: 250, paddingStart: 120, paddingBottom: 10}}>
-                <Button
-                  title="Load More"
-                  onPress={() => {
-                    getGames();
-                    changePageNumber();
-                  }} />
-              </View>
-            }
-
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-          >
-            {" "}
-          </FlatList>
-
-
-        </View>
-
-      </View>
-    );
-
-
-  } else {
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => console.log("asd")}>
-            <Feather name="chevron-left" color="#FFF" size={25} />
-          </TouchableOpacity>
-          <Feather name="filter" color="#FFF" size={25} />
-        </View>
-
-        <View style={styles.headerContainer}>
-          <View style={styles.searchBarStyle}>
-            <Feather
-              name="search"
-              size={20}
-              color="black"
-              style={{ marginLeft: 1, marginRight: 4 }}
-            />
-
-            <TextInput
-              value={search}
-              onChangeText={(text) => updateSearch(text)}
-              style={styles.search}
-              placeholder="Search"
-            />
-          </View>
-        </View>
-
-        <View style={theme === "light" ? styles.cont3Light : styles.cont3Dark}>
-          <Text style={theme === "light" ? styles.textHeaderLight : styles.textHeaderDark}>Products</Text>
-
-          <Text>Loading...</Text>
-
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "space-around",
-            }}
-          ></View>
+          <TextInput
+            value={search}
+            onChangeText={(text) => setSearch(text)}
+            style={[styles.search, { width: "100%" }]}
+            placeholder="Search"
+          />
         </View>
       </View>
-    );
-  }
+      <View style={theme === "light" ? styles.cont3Light : styles.cont3Dark}>
+        <Text style={theme === "light" ? styles.textHeaderLight : styles.textHeaderDark}>Products</Text>
+        {games != undefined
+          ? (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={matchedGames}
+              renderItem={({ item }) => (
+                <ProductCard game={item.name} bg={item.background_image} id={item.id} />
+              )}
+              ListFooterComponent={renderFooter}
+              keyExtractor={(item, index) => `${item.id}-${index}`}
+              numColumns={2}
+              onEndReached={getGames}
+              onEndReachedThreshold={0.5}
+              columnWrapperStyle={styles.categoriesContainer}
+            >
+            </FlatList>
+          )
+          : (<Text>Loading...</Text>)
+        }
+      </View>
+    </View>
+  );
 };
 
 export default SearchScreen;
 
 const styles = StyleSheet.create({
-
-
   container: {
     height: "100%",
     alignItems: "center",
-    justifyContent: "space-around",
     backgroundColor: "#1c73ba",
   },
 
   header: {
-    flex: 0.05,
-    //height: "15%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
     paddingHorizontal: 20,
-    //backgroundColor: "#1bab42",
     paddingTop: 40,
   },
 
@@ -242,18 +143,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "black",
   },
+
   textDark: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "lightgrey",
+    color: "white",
   },
 
   headerContainer: {
-    //backgroundColor: "#a30b0b",
-    flex: 0.1,
+    paddingTop: 40,
+    flex: 0.12,
     alignContent: "center",
-    //alignItems: "center",
     justifyContent: "center",
     padding: 10,
   },
@@ -262,8 +163,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingEnd: 225,
-
+    width: "60%",
     paddingHorizontal: 20,
     backgroundColor: "#d9dbda",
     borderRadius: 10,
@@ -271,73 +171,55 @@ const styles = StyleSheet.create({
   },
 
   cont3Light: {
-    flex: 0.85,
-    paddingLeft: 10,
+    flex: 0.88,
     backgroundColor: "#f2f2f2",
     width: "100%",
-    borderTopStartRadius: 50,
-    borderTopEndRadius: 50,
+    borderTopStartRadius: 40,
+    borderTopEndRadius: 40,
   },
 
   cont3Dark: {
-    flex: 0.85,
-    paddingLeft: 10,
+    flex: 0.88,
     backgroundColor: "#121212",
     width: "100%",
-    borderTopStartRadius: 50,
-    borderTopEndRadius: 50,
+    borderTopStartRadius: 40,
+    borderTopEndRadius: 40,
   },
 
-  bodyContainerLight: {
-    width: "100%",
-    height: 125,
+  categoriesContainer: {
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+  },
+
+  productItem: {
+    flex: 1,
+    width: 175,
+    height: 175,
     borderRadius: 10,
-    backgroundColor: "#D3D3D3",
-    position: "relative",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 8,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: 10,
   },
 
-  bodyContainerDark: {
-    width: "100%",
-    height: 125,
+  productImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
     borderRadius: 10,
-    backgroundColor: "#333333",
-    position: "relative",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 8,
   },
 
-  innerProductCardLight: {
-    position: "absolute",
-    width: "20%",
-    height: "24%",
-    backgroundColor: "#d9dbda",
-    top: 0,
-    left: 0,
-    borderTopLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  innerProductCardDark: {
-    position: "absolute",
-    width: "20%",
-    height: "24%",
-    backgroundColor: "#333333",
-    top: 0,
-    left: 0,
-    borderTopLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
+  productName: {
+    position: 'relative',
+    zIndex: 1,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
 
   textHeaderLight: {
     paddingTop: 20,
+    paddingBottom: 20,
     paddingStart: 20,
     fontSize: 18,
     paddingRight: 80,
@@ -348,18 +230,11 @@ const styles = StyleSheet.create({
   textHeaderDark: {
     paddingTop: 20,
     paddingStart: 20,
+    paddingBottom: 20,
     fontSize: 18,
     paddingRight: 80,
     lineHeight: 25,
     fontWeight: "bold",
-    color: "lightgrey",
+    color: "white",
   },
-
-  img: {
-    height: "80%",
-    width: "80%",
-    resizeMode: "cover",
-  },
-
-
 });

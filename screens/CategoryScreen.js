@@ -8,9 +8,6 @@ const CategoryScreen = () => {
 
     const navigation = useNavigation()
 
-    // Define state to manage selected category
-    const [selectedCategory, setSelectedCategory] = useState(null);
-
     const [categories, setCategories] = useState([]);
 
     // Define an array of categories
