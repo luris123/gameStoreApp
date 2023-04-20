@@ -5,8 +5,6 @@ import {
   StyleSheet,
   FlatList,
   Image,
-  ScrollView,
-  Button,
   Modal,
   TouchableOpacity,
 } from "react-native";
@@ -17,7 +15,7 @@ import ProductCartContext from "../components/ProductContext";
 import { auth } from "../firebase";
 import { getDatabase, ref, update } from "firebase/database";
 
-import axios from 'axios'
+import axios from "axios";
 
 const RenderCart = ({ item, removeItem }) => {
   const { theme } = useContext(ThemeContext);
@@ -85,7 +83,8 @@ const BuyModal = ({ showModal, setShowModal }) => {
           You have bought {product.length} items for a total of {totalPrice}€
         </Text>
         <Text style={theme === "light" ? styles.textLight : styles.textDark}>
-          Verification email has been sent to your address.</Text>
+          Verification email has been sent to your address.
+        </Text>
         <TouchableOpacity
           style={styles.buyButton}
           onPress={() => {
@@ -95,8 +94,6 @@ const BuyModal = ({ showModal, setShowModal }) => {
         >
           <Text style={styles.buttonText}>OK</Text>
         </TouchableOpacity>
-
-
       </View>
     </Modal>
   );
@@ -127,18 +124,20 @@ const ShoppingCartScreen = () => {
       update(dbRef, order);
       console.log("Order sent to email and database");
 
-      const response = await axios.post('https://europe-west1-gamestoreapp-69869.cloudfunctions.net/sendEmail', {
-        email: user.email,
-        orderID: orderID,
-        products: product
-      });
+      const response = await axios.post(
+        "https://europe-west1-gamestoreapp-69869.cloudfunctions.net/sendEmail",
+        {
+          email: user.email,
+          orderID: orderID,
+          products: product,
+        }
+      );
     } catch (error) {
       console.error(error);
     }
 
     setShowModal(true);
   };
-
 
   if (product.length === 0) {
     return (
@@ -162,11 +161,22 @@ const ShoppingCartScreen = () => {
           >
             Order Details
           </Text>
-
         </View>
 
-        <View style = {theme === "light" ? styles.bodyContainerLight : styles.bodyContainerDark}>
-          <Text style = {theme === "light" ? styles.myCartFontLight : styles.myCartFontDark}>My Cart</Text>
+        <View
+          style={
+            theme === "light"
+              ? styles.bodyContainerLight
+              : styles.bodyContainerDark
+          }
+        >
+          <Text
+            style={
+              theme === "light" ? styles.myCartFontLight : styles.myCartFontDark
+            }
+          >
+            My Cart
+          </Text>
 
           <Text
             style={{
@@ -208,8 +218,20 @@ const ShoppingCartScreen = () => {
         <View></View>
       </View>
 
-      <View style = {theme === "light" ? styles.bodyContainerLight : styles.bodyContainerDark}>
-        <Text style = {theme === "light" ? styles.myCartFontLight : styles.myCartFontDark}>My Cart</Text>
+      <View
+        style={
+          theme === "light"
+            ? styles.bodyContainerLight
+            : styles.bodyContainerDark
+        }
+      >
+        <Text
+          style={
+            theme === "light" ? styles.myCartFontLight : styles.myCartFontDark
+          }
+        >
+          My Cart
+        </Text>
 
         <FlatList
           showsVerticalScrollIndicator={false}
@@ -223,10 +245,7 @@ const ShoppingCartScreen = () => {
         </FlatList>
         <BuyModal showModal={showModal} setShowModal={setShowModal} />
         <View style={{ alignItems: "center" }}>
-          <TouchableOpacity
-            style={styles.buyButton}
-            onPress={handleBuy}
-          >
+          <TouchableOpacity style={styles.buyButton} onPress={handleBuy}>
             <Text style={styles.buttonText}>Buy Now</Text>
           </TouchableOpacity>
         </View>

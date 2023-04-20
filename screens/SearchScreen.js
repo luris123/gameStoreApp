@@ -6,24 +6,20 @@ import {
   Text,
   View,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
-import GameScreen from "./GameScreen";
 import ThemeContext from "../components/ThemeContext";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 
 const ProductCard = ({ game, bg, id }) => {
   const { theme } = useContext(ThemeContext);
-  const navigation = useNavigation()
-  //navigator.navigate()
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity
-      onPress={() => navigation.navigate("Game", { id })}
-    >
+    <TouchableOpacity onPress={() => navigation.navigate("Game", { id })}>
       <View style={[styles.productItem]}>
         <Image style={[styles.productImage]} source={{ uri: bg }} />
         <Text style={[styles.productName]}>{game}</Text>
@@ -38,7 +34,6 @@ const SearchScreen = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(false);
-  const navigation = useNavigation()
 
   useEffect(() => {
     getGames();
@@ -46,17 +41,17 @@ const SearchScreen = () => {
   }, []);
 
   const getGames = async () => {
-    if(search.length == 0){
+    if (search.length == 0) {
       setLoading(true);
       const response = await axios.get(
         `https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getGames?page=${pageNumber}`
       );
-      setGames(prevGames => [...prevGames, ...response.data.results])
+      setGames((prevGames) => [...prevGames, ...response.data.results]);
       setLoading(false);
-  
+
       //if there is a next page, increment the page number
       if (response.data.next == true) {
-        setPageNumber(pageNumber + 1)
+        setPageNumber(pageNumber + 1);
       }
     }
   };
@@ -70,9 +65,7 @@ const SearchScreen = () => {
   );
 
   const renderFooter = () => {
-    return loading ? (
-      <ActivityIndicator size="large" color="#0000ff" />
-    ) : null;
+    return loading ? <ActivityIndicator size="large" color="#0000ff" /> : null;
   };
 
   return (
@@ -94,26 +87,34 @@ const SearchScreen = () => {
         </View>
       </View>
       <View style={theme === "light" ? styles.cont3Light : styles.cont3Dark}>
-        <Text style={theme === "light" ? styles.textHeaderLight : styles.textHeaderDark}>Products</Text>
-        {games != undefined
-          ? (
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              data={matchedGames}
-              renderItem={({ item }) => (
-                <ProductCard game={item.name} bg={item.background_image} id={item.id} />
-              )}
-              ListFooterComponent={renderFooter}
-              keyExtractor={(item, index) => `${item.id}-${index}`}
-              numColumns={2}
-              onEndReached={getGames}
-              onEndReachedThreshold={0.5}
-              columnWrapperStyle={styles.categoriesContainer}
-            >
-            </FlatList>
-          )
-          : (<Text>Loading...</Text>)
-        }
+        <Text
+          style={
+            theme === "light" ? styles.textHeaderLight : styles.textHeaderDark
+          }
+        >
+          Products
+        </Text>
+        {games != undefined ? (
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={matchedGames}
+            renderItem={({ item }) => (
+              <ProductCard
+                game={item.name}
+                bg={item.background_image}
+                id={item.id}
+              />
+            )}
+            ListFooterComponent={renderFooter}
+            keyExtractor={(item, index) => `${item.id}-${index}`}
+            numColumns={2}
+            onEndReached={getGames}
+            onEndReachedThreshold={0.5}
+            columnWrapperStyle={styles.categoriesContainer}
+          ></FlatList>
+        ) : (
+          <Text>Loading...</Text>
+        )}
       </View>
     </View>
   );
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
   },
 
   categoriesContainer: {
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     paddingHorizontal: 20,
   },
 
@@ -196,25 +197,25 @@ const styles = StyleSheet.create({
     width: 175,
     height: 175,
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    alignItems: "center",
+    justifyContent: "flex-end",
     paddingBottom: 10,
   },
 
   productImage: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
+    position: "absolute",
+    width: "100%",
+    height: "100%",
     borderRadius: 10,
   },
 
   productName: {
-    position: 'relative',
+    position: "relative",
     zIndex: 1,
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    fontWeight: "bold",
+    color: "white",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
 
   textHeaderLight: {

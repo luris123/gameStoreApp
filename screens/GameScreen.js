@@ -1,6 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
 import {
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Image,
@@ -12,10 +11,7 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ThemeContext from "../components/ThemeContext";
 import axios from "axios";
-import ProductContext from "../components/ProductContext";
 import ProductCartContext from "../components/ProductContext";
-
-//const getDetailsAboutTheGame = httpsCallable(functions, 'getDetailsAboutTheGame');
 
 const GameScreen = ({ navigation, route }) => {
   const { id } = route.params;
@@ -39,7 +35,8 @@ const GameScreen = ({ navigation, route }) => {
 
   const [game, setGame] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const randomPrice = Math.floor(Math.random() * 20 + 40)
+  const randomPrice = Math.floor(Math.random() * 10) + 30;
+  const priceWithTaxes = randomPrice * 1.39;
 
   const getGames = async () => {
     setIsLoading(true);
@@ -66,8 +63,7 @@ const GameScreen = ({ navigation, route }) => {
       rating: response.data.results.rating,
       genres: genreArray,
       platforms: platformsArray,
-      price: randomPrice
-
+      price: priceWithTaxes.toFixed(2),
     });
     setIsLoading(false);
   };
@@ -78,7 +74,10 @@ const GameScreen = ({ navigation, route }) => {
 
   const handleAddGameToCart = () => {
     if (product.find((item) => item.id === id) === undefined) {
-      setProduct([...product, { id: id, name: game.name, image: game.image, price: game.price }]);
+      setProduct([
+        ...product,
+        { id: id, name: game.name, image: game.image, price: game.price },
+      ]);
     }
   };
 
@@ -135,75 +134,172 @@ const GameScreen = ({ navigation, route }) => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={toggleInfo}>
-          <View style={theme === "light" ? styles.infoContainerLight : styles.infoContainerDark}>
-            <Text style={theme === "light" ? styles.InfoHeaderLight : styles.InfoHeaderDark} numberOfLines={showFullInfo ? undefined : 2}>
+          <View
+            style={
+              theme === "light"
+                ? styles.infoContainerLight
+                : styles.infoContainerDark
+            }
+          >
+            <Text
+              style={
+                theme === "light"
+                  ? styles.InfoHeaderLight
+                  : styles.InfoHeaderDark
+              }
+              numberOfLines={showFullInfo ? undefined : 2}
+            >
               Info
             </Text>
             {showFullInfo && (
-            <>
-              <View style={styles.info}>
-                <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>
-                  Price:
-                </Text>
-                <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>
-                  {game.price}€
-                </Text>
-              </View>
-              <View style={styles.info}>
-                <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>
-                  Rating:
-                </Text>
-                <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>
-                  {game.rating}
-                </Text>
-              </View>
-              <View style={styles.info}>
-                <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>
-                  Genres:
-                </Text>
-                <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>
-                  {game.genres}
-                </Text>
-              </View>
-              <View style={styles.info}>
-                <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>
-                  Release Date:
-                </Text>
-                <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>
-                  {game.releaseDate}
-                </Text>
-              </View>
-              <View style={styles.info}>
-                <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>
-                  Developer:
-                </Text>
-                <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>
-                  {game.developer}
-                </Text>
-              </View>
-              <View style={styles.info}>
-                <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>
-                  Publisher:
-                </Text>
-                <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>
-                  {game.publisher}
-                </Text>
-              </View>
-              <View style={styles.info}>
-                <Text style={theme === "light" ? styles.infoLabelLight : styles.infoLabelDark}>
-                  Platforms:
-                </Text>
-                <Text style={theme === "light" ? styles.infoValueLight : styles.infoValueDark}>
-                  {game.platforms}
-                </Text>
-              </View>
-            </>
+              <>
+                <View style={styles.info}>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoLabelLight
+                        : styles.infoLabelDark
+                    }
+                  >
+                    Price:
+                  </Text>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoValueLight
+                        : styles.infoValueDark
+                    }
+                  >
+                    {game.price}€
+                  </Text>
+                </View>
+                <View style={styles.info}>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoLabelLight
+                        : styles.infoLabelDark
+                    }
+                  >
+                    Rating:
+                  </Text>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoValueLight
+                        : styles.infoValueDark
+                    }
+                  >
+                    {game.rating}
+                  </Text>
+                </View>
+                <View style={styles.info}>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoLabelLight
+                        : styles.infoLabelDark
+                    }
+                  >
+                    Genres:
+                  </Text>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoValueLight
+                        : styles.infoValueDark
+                    }
+                  >
+                    {game.genres}
+                  </Text>
+                </View>
+                <View style={styles.info}>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoLabelLight
+                        : styles.infoLabelDark
+                    }
+                  >
+                    Release Date:
+                  </Text>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoValueLight
+                        : styles.infoValueDark
+                    }
+                  >
+                    {game.releaseDate}
+                  </Text>
+                </View>
+                <View style={styles.info}>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoLabelLight
+                        : styles.infoLabelDark
+                    }
+                  >
+                    Developer:
+                  </Text>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoValueLight
+                        : styles.infoValueDark
+                    }
+                  >
+                    {game.developer}
+                  </Text>
+                </View>
+                <View style={styles.info}>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoLabelLight
+                        : styles.infoLabelDark
+                    }
+                  >
+                    Publisher:
+                  </Text>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoValueLight
+                        : styles.infoValueDark
+                    }
+                  >
+                    {game.publisher}
+                  </Text>
+                </View>
+                <View style={styles.info}>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoLabelLight
+                        : styles.infoLabelDark
+                    }
+                  >
+                    Platforms:
+                  </Text>
+                  <Text
+                    style={
+                      theme === "light"
+                        ? styles.infoValueLight
+                        : styles.infoValueDark
+                    }
+                  >
+                    {game.platforms}
+                  </Text>
+                </View>
+              </>
             )}
           </View>
         </TouchableOpacity>
         <Button
-            title="Add to shopping cart"
-            onPress={handleAddGameToCart}
+          title="Add to shopping cart"
+          onPress={handleAddGameToCart}
         ></Button>
       </ScrollView>
     </View>
@@ -315,7 +411,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 8,
-    backgroundColor: "lightblue"
+    backgroundColor: "lightblue",
   },
   priceLabel: {
     alignSelf: "center",

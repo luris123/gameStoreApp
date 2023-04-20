@@ -6,7 +6,7 @@ import {
   View,
   Modal,
 } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { auth } from "../firebase";
 import ThemeContext from "../components/ThemeContext";
 import SwitchWithText from "../components/SwitchWithText";
@@ -50,9 +50,7 @@ const PasswordModal = ({ showModal, setShowModal }) => {
   };
 
   return (
-    
     <Modal
-    
       animationType="slide"
       transparent={false}
       visible={showModal}
@@ -129,8 +127,6 @@ const ProfileScreen = ({ navigation }) => {
       darkMode: theme === "light" ? true : false,
     });
   };
-
-
 
   const handleSignOut = async () => {
     await AsyncStorage.removeItem("@email");
