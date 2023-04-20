@@ -33,6 +33,7 @@ const GameScreen = ({ navigation, route }) => {
 
   const [game, setGame] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const randomPrice = Math.floor(Math.random() * 20 + 40)
 
   const getGames = async () => {
     setIsLoading(true);
@@ -59,6 +60,8 @@ const GameScreen = ({ navigation, route }) => {
       rating: response.data.results.rating,
       genres: genreArray,
       platforms: platformsArray,
+      price: randomPrice
+
     });
     setIsLoading(false);
   };
@@ -69,7 +72,7 @@ const GameScreen = ({ navigation, route }) => {
 
   const handleAddGameToCart = () => {
     if (product.find((item) => item.id === id) === undefined) {
-      setProduct([...product, { id: id, name: game.name, image: game.image }]);
+      setProduct([...product, { id: id, name: game.name, image: game.image, price: game.price }]);
     }
   };
 

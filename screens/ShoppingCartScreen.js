@@ -1,21 +1,24 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
-  useState,
   Image,
   ScrollView,
   Button,
+  Modal,
+  TouchableOpacity,
 } from "react-native";
 import ThemeContext from "../components/ThemeContext";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ProductCartContext from "../components/ProductContext";
+import { auth } from "../firebase";
+import { getDatabase, ref, update } from "firebase/database";
 
 const RenderCart = ({ item, removeItem }) => {
+  const { theme } = useContext(ThemeContext);
   return (
     <View styles={styles.touchableOp}>
       <View style={styles.productView}>
@@ -27,12 +30,12 @@ const RenderCart = ({ item, removeItem }) => {
             fontWeight: "400",
             maxWidth: "80%",
             minWidth: "80%",
-
+            color: theme === "light" ? "#000000" : "#f2f2f2", 
             marginRight: 4,
             letterSpacing: 1,
           }}
         >
-          {item.name + "\n \n" + "59.99€"}
+          {item.name + "\n \n" + item.price + "€"}
         </Text>
         <View>
           <TouchableOpacity onPress={() => removeItem(item.id)}>
@@ -53,15 +56,80 @@ const RenderCart = ({ item, removeItem }) => {
   );
 };
 
-const ShoppingCartScreen = () => {
+const BuyModal = ({ showModal, setShowModal }) => {
+  const { theme } = useContext(ThemeContext);
   const { product, setProduct } = useContext(ProductCartContext);
 
+  const totalPrice = product.reduce((acc, item) => {
+    return acc + item.price;
+  }, 0);
+
+  return (
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={showModal}
+        onRequestClose={() => {
+          setShowModal(!showModal);
+        }}
+      >
+        <View style={theme === "light" ? styles.modalLight : styles.modalDark}>
+          <Text
+            style={theme === "light" ? styles.buyTextLight : styles.buyTextDark}
+          >
+            Thank you for your purchase!
+          </Text>
+          <Text style={theme === "light" ? styles.textLight : styles.textDark}>
+            You have bought {product.length} items for a total of {totalPrice}€
+          </Text>
+          <Text style={theme === "light" ? styles.textLight : styles.textDark}>
+          Verification email has been sent to your address.</Text>
+          <TouchableOpacity
+            style={styles.buyButton}
+            onPress={() => {
+              setShowModal(!showModal);
+              setProduct([]);
+            }}
+          >
+            <Text style={styles.buttonText}>OK</Text>
+          </TouchableOpacity>
+
+
+        </View>
+      </Modal>
+  );
+};
+
+const ShoppingCartScreen = () => {
+  const { product, setProduct } = useContext(ProductCartContext);
   const { theme } = useContext(ThemeContext);
+  const [showModal, setShowModal] = useState(false);
+  const user = auth.currentUser;
+  const db = getDatabase();
 
   const removeItem = (id) => {
     const newProduct = product.filter((item) => item.id !== id);
     setProduct(newProduct);
   };
+
+  const handleBuy = () => {
+    let orderID = Math.floor(Math.random() * 1000000000);
+    const order = {
+      orderID: orderID,
+      products: product,
+      userID: user.uid,
+    };
+    const dbRef = ref(db, "orders/" + orderID);
+    update(dbRef, order);
+    console.log("Order sent to database")
+    console.log("ID: " + orderID)
+    console.log("User ID: " + user.uid)
+    console.log("Products: " + JSON.stringify(product))
+    //tähän vois vielä keksiä sen verifikaatio sähköpostin
+
+    setShowModal(true);
+  };
+
 
   if (product.length === 0) {
     return (
@@ -79,23 +147,22 @@ const ShoppingCartScreen = () => {
           <Text
             style={{
               fontSize: 18,
-              color: "#f2f2f2",
+              color: theme === "light" ? "#000000" : "#f2f2f2",
               fontWeight: "500",
             }}
           >
             Order Details
           </Text>
 
-          <View></View>
         </View>
 
-        <View style={styles.bodyContainer}>
-          <Text style={styles.myCartFont}>My Cart</Text>
+        <View style = {theme === "light" ? styles.bodyContainerLight : styles.bodyContainerDark}>
+        <Text style = {theme === "light" ? styles.myCartFontLight : styles.myCartFontDark}>My Cart</Text>
 
           <Text
             style={{
               fontSize: 18,
-              color: "#000000",
+              color: theme === "light" ? "#000000" : "#f2f2f2",
               fontWeight: "500",
               padding: 15,
             }}
@@ -132,8 +199,8 @@ const ShoppingCartScreen = () => {
         <View></View>
       </View>
 
-      <View style={styles.bodyContainer}>
-        <Text style={styles.myCartFont}>My Cart</Text>
+      <View style = {theme === "light" ? styles.bodyContainerLight : styles.bodyContainerDark}>
+        <Text style = {theme === "light" ? styles.myCartFontLight : styles.myCartFontDark}>My Cart</Text>
 
         <FlatList
           showsVerticalScrollIndicator={false}
@@ -145,6 +212,15 @@ const ShoppingCartScreen = () => {
         >
           {" "}
         </FlatList>
+        <BuyModal showModal={showModal} setShowModal={setShowModal} />
+        <View style={{ alignItems: "center" }}>
+          <TouchableOpacity
+            style={styles.buyButton}
+            onPress={handleBuy}
+          >
+            <Text style={styles.buttonText}>Buy Now</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -168,19 +244,25 @@ const styles = StyleSheet.create({
     position: "relative",
   },
 
-  myCartFont: {
+  myCartFontLight: {
     fontSize: 17,
     fontWeight: "bold",
     color: "#000000",
     letterSpacing: 1,
-    //paddingTop: 5,
+    paddingLeft: 15,
+    paddingBottom: 5,
+  },
+  myCartFontDark: {
+    fontSize: 17,
+    fontWeight: "bold",
+    color: "#f2f2f2",
+    letterSpacing: 1,
     paddingLeft: 15,
     paddingBottom: 5,
   },
 
-  bodyContainer: {
+  bodyContainerLight: {
     flex: 1,
-    //paddingLeft: 10,
     backgroundColor: "#f2f2f2",
     width: "100%",
     height: "100%",
@@ -188,9 +270,16 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 50,
     position: "relative",
     paddingTop: 25,
-    // alignItems: "center",
-    // justifyContent: "space-between",
-    //flexDirection: "row",
+  },
+  bodyContainerDark: {
+    flex: 1,
+    backgroundColor: "#121212",
+    width: "100%",
+    height: "100%",
+    borderTopStartRadius: 50,
+    borderTopEndRadius: 50,
+    position: "relative",
+    paddingTop: 25,
   },
 
   productView: {
@@ -224,5 +313,59 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     borderRadius: 10,
     opacity: 0.6,
+  },
+  buyButton: {
+    backgroundColor: "#2c6bed",
+    width: "100%",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 10,
+    width: "80%",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  modalLight: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+  },
+  modalDark: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#121212",
+  },
+  buyTextLight: {
+    fontSize: 18,
+    color: "#000000",
+    fontWeight: "500",
+    padding: 15,
+  },
+  buyTextDark: {
+    fontSize: 18,
+    color: "#FFFFFF",
+    fontWeight: "500",
+    padding: 15,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  textLight: {
+    fontSize: 12,
+    color: "#000000",
+    fontWeight: "500",
+    padding: 15,
+  },
+  textDark: {
+    fontSize: 13,
+    color: "#FFFFFF",
+    fontWeight: "500",
   },
 });

@@ -6,16 +6,20 @@ import {
   View,
   Modal,
 } from "react-native";
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { auth } from "../firebase";
 import ThemeContext from "../components/ThemeContext";
 import SwitchWithText from "../components/SwitchWithText";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getDatabase, ref, update } from "firebase/database";
-import { updatePassword, reauthenticateWithCredential } from "firebase/auth";
+import { get, getDatabase, ref, update } from "firebase/database";
+import {
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+} from "firebase/auth";
 
-const PasswordModal = ({ showModal, setShowModal, changePassword }) => {
+const PasswordModal = ({ showModal, setShowModal }) => {
   const { theme } = useContext(ThemeContext);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -27,16 +31,18 @@ const PasswordModal = ({ showModal, setShowModal, changePassword }) => {
       return;
     }
     const user = auth.currentUser;
-    const credential = {
-      email: user.email,
-      password: oldPassword,
-    }
+    const password = oldPassword;
+    const credential = EmailAuthProvider.credential(user.email, password);
+
     reauthenticateWithCredential(user, credential)
       .then(() => {
         updatePassword(user, newPassword)
           .then(() => {
             alert("Password updated");
             setShowModal(false);
+            setOldPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
           })
           .catch((error) => alert(error.message));
       })
@@ -44,7 +50,9 @@ const PasswordModal = ({ showModal, setShowModal, changePassword }) => {
   };
 
   return (
+    
     <Modal
+    
       animationType="slide"
       transparent={false}
       visible={showModal}
@@ -52,11 +60,13 @@ const PasswordModal = ({ showModal, setShowModal, changePassword }) => {
         setShowModal(!showModal);
       }}
     >
-      <View style = {theme === "light" ? styles.modalLight : styles.modalDark}>
+      <View style={theme === "light" ? styles.modalLight : styles.modalDark}>
         <View>
           <Text
             style={
-              theme === "light" ? styles.profileTextLight : styles.profileTextDark
+              theme === "light"
+                ? styles.profileTextLight
+                : styles.profileTextDark
             }
           >
             Change password
@@ -66,21 +76,27 @@ const PasswordModal = ({ showModal, setShowModal, changePassword }) => {
             value={oldPassword}
             secureTextEntry={true}
             onChangeText={(text) => setOldPassword(text)}
-            style={theme === "light" ? styles.inputTextLight : styles.inputTextDark}
+            style={
+              theme === "light" ? styles.inputTextLight : styles.inputTextDark
+            }
           />
           <TextInput
             placeholder="New password"
             value={newPassword}
             secureTextEntry={true}
             onChangeText={(text) => setNewPassword(text)}
-            style={theme === "light" ? styles.inputTextLight : styles.inputTextDark}
+            style={
+              theme === "light" ? styles.inputTextLight : styles.inputTextDark
+            }
           />
           <TextInput
             placeholder="Confirm password"
             value={confirmPassword}
             secureTextEntry={true}
             onChangeText={(text) => setConfirmPassword(text)}
-            style={theme === "light" ? styles.inputTextLight : styles.inputTextDark}
+            style={
+              theme === "light" ? styles.inputTextLight : styles.inputTextDark
+            }
           />
           <TouchableOpacity
             style={styles.logoutButton}
@@ -102,12 +118,12 @@ const PasswordModal = ({ showModal, setShowModal, changePassword }) => {
 
 const ProfileScreen = ({ navigation }) => {
   const { theme, setTheme } = useContext(ThemeContext);
-  const [newPassword, setNewPassword] = useState("");
   const [showModal, setShowModal] = useState(false);
   const user = auth.currentUser;
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
+    AsyncStorage.setItem("@darkMode", theme === "light" ? "true" : "false");
     const db = getDatabase();
     update(ref(db, "users/" + user.uid), {
       darkMode: theme === "light" ? true : false,
@@ -115,7 +131,6 @@ const ProfileScreen = ({ navigation }) => {
   };
 
 
-  const changePassword = () => {};
 
   const handleSignOut = async () => {
     await AsyncStorage.removeItem("@email");
@@ -151,7 +166,7 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.buttonText}>Change password</Text>
       </TouchableOpacity>
 
-      <PasswordModal showModal={showModal} setShowModal={setShowModal} changePassword={changePassword} />
+      <PasswordModal showModal={showModal} setShowModal={setShowModal} />
       <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
