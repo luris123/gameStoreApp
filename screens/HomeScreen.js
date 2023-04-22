@@ -1,69 +1,60 @@
-import { useNavigation } from '@react-navigation/core'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect } from 'react'
-import { auth, functions } from '../firebase'
-import { httpsCallable } from 'firebase/functions';
+import { StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import axios from "axios";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
-const getAllGenres = httpsCallable(functions, 'getAllGenres');
+import SearchScreen from "./SearchScreen";
+import ShoppingCartScreen from "./ShoppingCartScreen";
+import ProfileScreen from "./ProfileScreen";
+import CategoryScreen from "./CategoryScreen";
+
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const HomeScreen = () => {
-
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    getAllGenres()
-      .then(result => {
-        console.log(result.data);
-      })
-      .catch(error => {
-        console.log(error);
-      })
-  }, [])
-
-  const handleSingOut = () => {
-    auth.signOut()
-      .then(() => {
-        console.log('Signed out');
-
-      })
-      .catch(error => alert(error.message));
-  }
+  const Tab = createBottomTabNavigator();
 
   return (
-    <View style={styles.homeContainer}>
-      <Text style={styles.emailText}>Email: {auth.currentUser.email}</Text>
-      <TouchableOpacity style={styles.logoutButton} onPress={handleSingOut}>
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableOpacity>
-    </View>
-  )
-}
+    <Tab.Navigator
+      initialRouteName={"Categories"}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
 
-export default HomeScreen
+          if (route.name === "Categories") {
+            iconName = focused ? "game-controller" : "game-controller-outline";
+          } else if (route.name === "Profile") {
+            iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "Search") {
+            iconName = focused ? "search" : "search-outline";
+          } else if (route.name === "Shopping") {
+            iconName = focused ? "card-outline" : "card-outline";
+          }
 
-const styles = StyleSheet.create({
-  homeContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emailText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  logoutButton: {
-    backgroundColor: '#2c6bed',
-    width: '100%',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 10,
-    width: '80%'
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-})
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+      ScreenOptions={{
+        activeTintColor: "tomato",
+        inactiveTintColor: "grey",
+        labelStyle: { paddingBottom: 10, fontSize: 10 },
+        style: { padding: 10, height: 70 },
+      }}
+    >
+      <Tab.Screen name={"Categories"} component={CategoryScreen} />
+      <Tab.Screen
+        name={"Search"}
+        component={SearchScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen name={"Profile"} component={ProfileScreen} />
+      <Tab.Screen
+        name={"Shopping"}
+        component={ShoppingCartScreen}
+        options={{ headerShown: false }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+export default HomeScreen;
+
