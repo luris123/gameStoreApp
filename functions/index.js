@@ -174,7 +174,7 @@ exports.sendEmail = functions.region("europe-west1").https.onRequest((request, r
     request.body.products.forEach(product => {
       const redeemCode = generateRandomString();
 
-      totalPrice += product.price;
+      totalPrice += parseFloat(product.price);
 
       games.push({
         "name": product.name,
@@ -190,8 +190,8 @@ exports.sendEmail = functions.region("europe-west1").https.onRequest((request, r
         port: 465,
         secure: true,
         auth: {
-          user: 'gamestoreapp12@gmail.com',
-          pass: 'ndsjsuwishlzjucw'
+          user: process.env.EMAIL,
+          pass: process.env.PASSWORD
         }
       });
 
