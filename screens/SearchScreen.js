@@ -19,7 +19,7 @@ const ProductCard = ({ game, bg, id }) => {
   const { theme } = useContext(ThemeContext);
   const navigation = useNavigation();
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("Game", { id })}>
+    <TouchableOpacity onPress={() => navigation.navigate("Game", { id, game })}>
       <View style={[styles.productItem]}>
         <Image style={[styles.productImage]} source={{ uri: bg }} />
         <Text style={[styles.productName]}>{game}</Text>

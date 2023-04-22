@@ -52,7 +52,7 @@ const GamesByGenreScreen = ({ route }) => {
   // Render a category item
   const renderCategoryItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Game", { id: item.id })}
+      onPress={() => navigation.navigate("Game", { id: item.id, game: item.name })}
     >
       <View style={[styles.categoryItem]}>
         <Image

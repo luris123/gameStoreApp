@@ -60,9 +60,14 @@ const BuyModal = ({ showModal, setShowModal }) => {
   const { theme } = useContext(ThemeContext);
   const { product, setProduct } = useContext(ProductCartContext);
 
-  const totalPrice = product.reduce((acc, item) => {
-    return acc + item.price;
-  }, 0);
+  let totalPrice = 0;
+
+  product.forEach(element => {
+    totalPrice += parseFloat(element.price);
+  });
+
+  //Show only 2 decimals
+  totalPrice = totalPrice.toFixed(2);
 
   return (
     <Modal

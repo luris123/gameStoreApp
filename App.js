@@ -126,12 +126,12 @@ export default function App() {
               <Stack.Screen
                 name="GamesByGenre"
                 component={GamesByGenreScreen}
-                options={{ headerShown: true }}
+                options={({route}) => ({title: route.params.genre ,headerShown: true })}
               />
               <Stack.Screen
                 name="Game"
                 component={GameScreen}
-                options={{ headerShown: true }}
+                options={({route}) => ({title: route.params.game ,headerShown: true })}
               />
             </Stack.Navigator>
           </NavigationContainer>

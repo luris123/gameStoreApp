@@ -13,16 +13,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 const HomeScreen = () => {
   const Tab = createBottomTabNavigator();
 
-  useEffect(() => {
-    getGenres();
-  }, []);
-
-  const getGenres = async () => {
-    const response = await axios.get(
-      "https://europe-west1-gamestoreapp-69869.cloudfunctions.net/getAllGenres"
-    );
-  };
-
   return (
     <Tab.Navigator
       initialRouteName={"Categories"}
