@@ -12,17 +12,15 @@ import React, { useState } from "react";
 
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-
-import { getDatabase, ref, update } from "firebase/database";
-
+import { getDatabase, ref, set } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [focused, setFocused] = useState(false);
-  const [focused2, setFocused2] = useState(false);
+  const [focused, setFocused] = useState(false)
+  const [focused2, setFocused2] = useState(false)
 
   const navigation = useNavigation();
 
@@ -31,15 +29,17 @@ const RegisterScreen = () => {
       .then((userCredentials) => {
         const user = userCredentials.user;
         const db = getDatabase();
-        update(ref(db, "users/" + user.uid), {
+        set(ref(db, "users/" + user.uid), {
           email: email,
+          password: password,
           darkMode: false,
           uid: user.uid,
         });
+
       })
       .then(async () => {
-        await AsyncStorage.setItem("@email", email);
-        await AsyncStorage.setItem("@password", password);
+        await AsyncStorage.setItem('@email', email);
+        await AsyncStorage.setItem('@password', password);
       })
       .catch((error) => alert(error.message));
   };
@@ -49,85 +49,84 @@ const RegisterScreen = () => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <Ionicons
-        name="lock-open-sharp"
-        color={"#000000"}
-        size={60}
-        style={{ marginBottom: 50 }}
-      />
 
-      <Text
-        style={{
-          fontSize: 20,
-          marginHorizontal: 50,
-          fontFamily: "Poppins",
-          fontWeight: 500,
-        }}
-      >
-        Get started{" "}
-      </Text>
+      <Ionicons name='lock-open-sharp' color={"#000000"} size={60} style={{marginBottom: 50}} />
+
+      <Text style={{fontSize: 20,
+                    marginHorizontal: 50,
+                    fontFamily: "Poppins",
+                    fontWeight: 500,
+                    }}>Get started </Text>
 
       <Text style={styles.registerText3}>Register here</Text>
 
+
       <View style={styles.inputContainer}>
+
         <TextInput
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          style={[
-            {
-              fontWeight: "500",
-              backgroundColor: "#dae0eb",
-              paddingHorizontal: 15,
-              paddingVertical: 10,
-              borderRadius: 10,
-              marginTop: 5,
-              borderWidth: 1,
-              borderColor: "#838c9c",
-            },
-            focused && {
-              backgroundColor: "#dae0eb",
-              borderWidth: 3,
-              borderColor: "#0853d4",
-              shadowOffset: { width: 4, height: 20 },
-              shadowColor: "black",
-              shadowOpacity: 0.2,
-              shadowRadius: 20,
-            },
-          ]}
-        />
 
-        <TextInput
-          onFocus={() => setFocused2(true)}
-          onBlur={() => setFocused2(false)}
-          placeholder="Password"
-          value={password}
-          onChangeText={(password) => setPassword(password)}
-          secureTextEntry
+          placeholder='Email'
+          value={email}
+          onChangeText={text => setEmail(text)}
+
+          
           style={[
-            {
-              fontWeight: "500",
-              backgroundColor: "#dae0eb",
-              paddingHorizontal: 15,
-              paddingVertical: 10,
-              borderRadius: 10,
-              marginTop: 5,
-              borderWidth: 1,
-              borderColor: "#838c9c",
-            },
-            focused2 && {
-              backgroundColor: "#dae0eb",
-              borderWidth: 3,
-              borderColor: "#0853d4",
-              shadowOffset: { width: 4, height: 20 },
-              shadowColor: "black",
-              shadowOpacity: 0.2,
-              shadowRadius: 20,
-            },
-          ]}
-        />
+              {
+                  fontWeight: "500",
+                  backgroundColor: '#dae0eb',
+                  paddingHorizontal: 15,
+                  paddingVertical: 10,
+                  borderRadius: 10,
+                  marginTop: 5,
+                  borderWidth: 1,
+                  borderColor: "#838c9c"
+              },
+              focused && {
+                  backgroundColor: '#dae0eb',
+                  borderWidth: 3,
+                  borderColor: "#0853d4",
+                  shadowOffset: { width: 4, height: 20 },
+                  shadowColor: "black",
+                  shadowOpacity: 0.2,
+                  shadowRadius: 20,
+              },
+            ]}
+                  />
+
+            <TextInput
+              onFocus={() => setFocused2(true)}
+              onBlur={() => setFocused2(false)}
+              
+              placeholder='Password'
+              value={password}
+              onChangeText={password => setPassword(password)}
+              secureTextEntry
+              
+              style={[
+                  {
+                      fontWeight: "500",
+                      backgroundColor: '#dae0eb',
+                      paddingHorizontal: 15,
+                      paddingVertical: 10,
+                      borderRadius: 10,
+                      marginTop: 5,
+                      borderWidth: 1,
+                      borderColor: "#838c9c"
+                  },
+                  focused2 && {
+                      backgroundColor: '#dae0eb',
+                      borderWidth: 3,
+                      borderColor: "#0853d4",
+                      shadowOffset: { width: 4, height: 20 },
+                      shadowColor: "black",
+                      shadowOpacity: 0.2,
+                      shadowRadius: 20,
+                  },
+                ]}
+                
+                />
       </View>
       <View style={styles.loginContainer}>
         <TouchableOpacity onPress={handleSignUp} style={styles.button}>
@@ -152,7 +151,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F2F2F2",
+    backgroundColor: "#F2F2F2"
   },
   inputContainer: {
     width: "80%",
@@ -165,7 +164,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 5,
     borderWidth: 1,
-    borderColor: "#838c9c",
+    borderColor: "#838c9c"
   },
   loginContainer: {
     width: "60%",
@@ -203,5 +202,8 @@ const styles = StyleSheet.create({
     marginVertical: 50,
     margin: 20,
     fontFamily: "Poppins",
-  },
+
+},
+
+
 });

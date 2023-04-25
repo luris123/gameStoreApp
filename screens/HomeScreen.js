@@ -40,7 +40,7 @@ const HomeScreen = () => {
         style: { padding: 10, height: 70 },
       }}
     >
-      <Tab.Screen name={"Categories"} component={CategoryScreen} />
+      <Tab.Screen name={"Categories"} component={CategoryScreen} options={{headerShown: false}} />
       <Tab.Screen
         name={"Search"}
         component={SearchScreen}

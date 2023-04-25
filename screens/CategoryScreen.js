@@ -8,8 +8,10 @@ import {
   Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import AppHeader from "../components/AppHeader";
 
 import axios from "axios";
+
 
 const CategoryScreen = () => {
   const navigation = useNavigation();
@@ -44,6 +46,9 @@ const CategoryScreen = () => {
 
   return (
     <View style={[styles.container]}>
+      
+      <AppHeader  title="Categories" headerBg={"#1c73ba"} iconColor={"#000000"} titleAlight="center" right="more-vertical" />
+      
       <FlatList
         data={categories}
         renderItem={renderCategoryItem}
@@ -89,6 +94,7 @@ const styles = StyleSheet.create({
     color: "white",
     backgroundColor: "rgba(0,0,0,0.5)",
   },
+
 });
 
 export default CategoryScreen;
