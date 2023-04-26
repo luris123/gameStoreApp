@@ -1,11 +1,11 @@
 # Spring 2023 OAMK mobile project
 
-##Project name: GameStoreApp
+## Project name: GameStoreApp
 
-##Technologies an tools
+## Technologies an tools
 
-###Frontend
+### Frontend
 
-###Backend
+### Backend
 
-###Database???
+### Database???
