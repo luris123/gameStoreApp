@@ -17,3 +17,4 @@ For backend we used Firebase for user authentication, API functions and Realtime
 ### Väinö Kasurinen 
 
 Worked with UI and with API, made navigation for the application and made improved version for login and register screen.
+[Link to Väinö's Github](https://github.com/VKasurinen)
