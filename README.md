@@ -23,4 +23,4 @@ Worked with UI and with API, made navigation for the application and made improv
 
 ![Category Screen](gamestoreapp_1.png)
 
-![Search Screen](gamestoreapp_1.png)
+![Search Screen](gamestoreapp_2.png)
