@@ -1,6 +1,6 @@
 # Spring 2023 OAMK mobile project
 
-## Project name: GameStoreApp
+## Project name: GameStoreApp [demo video (finnish only)](https://www.youtube.com/watch?v=bO8OB8lTldI)
 
 ## Technologies an tools
 
